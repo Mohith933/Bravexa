@@ -102,9 +102,11 @@ if ('webkitSpeechRecognition' in window) {
     newMessage.textContent = message;
     chatWindow.appendChild(newMessage);
     makeMessageVisible(newMessage);
-
+
+
+
+    // AI typing hearts animation
  // AI typing placeholder
-// Create AI message container
 const aiMessage = document.createElement("div");
 aiMessage.classList.add("message", "ai-message");
 
@@ -116,38 +118,31 @@ const thinkingTexts = [
   "✨ Generating response"
 ];
 
+// Pick random text
 const randomText =
   thinkingTexts[Math.floor(Math.random() * thinkingTexts.length)];
 
-// 👉 Proper dots animation structure
 aiMessage.innerHTML = `
   <div class="ai-thinking">
+    <span class="ai-icon"></span>
     <span class="ai-text">${randomText}</span>
-    <span class="dots">
-      <span></span><span></span><span></span>
-    </span>
+    <span class="dots"></span>
   </div>
 `;
 
 chatWindow.appendChild(aiMessage);
 makeMessageVisible(aiMessage);
 
-// 👉 AI response
-setTimeout(async () => {
+  setTimeout(async () => {
   const response = await generateAIResponse(message);
 
-  // Smooth fade out thinking
-  aiMessage.querySelector(".ai-thinking").style.opacity = "0";
+  // Clear thinking UI smoothly
+  aiMessage.innerHTML = "";
 
-  setTimeout(() => {
-    aiMessage.innerHTML = ""; // clear
+  // Type effect (your function)
+  typeText(aiMessage, response);
 
-    // 👉 Typewriter effect
-    typeText(aiMessage, response);
-
-    saveMessage(currentChatId, "ai", response);
-  }, 300);
-
+  saveMessage(currentChatId, "ai", response);
 }, 1000);
     
   }
@@ -163,20 +158,16 @@ setTimeout(async () => {
   // === BRAVEXA TYPE EFFECT ===  
 function typeText(element, htmlContent, speed = 12) {
   let i = 0;
-
-  // Create temp element to extract text only
-  const temp = document.createElement("div");
-  temp.innerHTML = htmlContent;
-  const textContent = temp.innerText;
-
   element.innerHTML = "";
 
   let lastScroll = 0;
 
   function type() {
-    i += 2;
-    element.innerText = textContent.slice(0, i);
+    // increase characters smoothly
+    i += 2; // balanced speed (not jumpy)
+    element.innerHTML = htmlContent.slice(0, i);
 
+    // auto-scroll only when needed
     const now = Date.now();
     if (now - lastScroll > 120) {
       window.scrollTo({
@@ -186,10 +177,10 @@ function typeText(element, htmlContent, speed = 12) {
       lastScroll = now;
     }
 
-    if (i < textContent.length) {
+    if (i < htmlContent.length) {
       requestAnimationFrame(type);
     } else {
-      element.innerHTML = htmlContent; // ✅ final correct render
+      element.innerHTML = htmlContent; // ensure full render
     }
   }
 
@@ -198,136 +189,701 @@ function typeText(element, htmlContent, speed = 12) {
 // === SIMPLE AI RESPONSES ===
   async function generateAIResponse(userMessage) {
   const msg = (userMessage || "").toLowerCase().trim();
+  let response = "";
 
-  function section(title, content) {
-    return `
-      <div class="ai-block">
-        <div class="ai-title">${title}</div>
-        <div class="ai-content">${content}</div>
-      </div>
-    `;
+  function detectIntent(message) {
+  const msg = message.toLowerCase();
+
+  let bestMatch = "default";
+  let maxScore = 0;
+
+  for (const [intent, keywords] of Object.entries(intents)) {
+    let score = 0;
+
+    for (const keyword of keywords) {
+      if (msg.includes(keyword)) {
+        score += keyword.length; // longer match = stronger intent
+      }
+    }
+
+    if (score > maxScore) {
+      maxScore = score;
+      bestMatch = intent;
+    }
   }
 
-  function docBlock(title, content, actions = "") {
-    return `
-      <div class="ai-doc-block">
-        <div class="ai-doc-header">
-          <span>${title}</span>
-          <div class="ai-actions">${actions}</div>
+  return bestMatch;
+}
+
+ // --- simple normalization + intent mapping ---
+  // --- simple normalization + intent mapping ---
+    const intents = {
+  greeting: [
+    "hello", "hi", "hey", "good morning", "good evening", "bye",
+    "how are you", "what's up"
+  ],
+
+  leave: [
+    "leave", "leave letter", "apply leave", "need leave",
+    "absent", "permission", "holiday request"
+  ],
+
+  email: [
+    "email", "mail", "write mail", "compose mail",
+    "send message", "official message"
+  ],
+
+  resume: [
+    "resume", "cv", "curriculum vitae", "portfolio",
+    "my profile", "job resume"
+  ],
+
+  project: [
+    "project", "project report", "documentation",
+    "project file", "final year project"
+  ],
+
+  word: [
+    "word", "document", "doc", "docx", "report",
+    "write report"
+  ],
+
+  excel: [
+    "excel", "sheet", "spreadsheet", "csv",
+    "data table"
+  ],
+
+  powerpoint: [
+    "presentation", "slides", "ppt", "pptx",
+    "make slides"
+  ],
+
+  access: [
+    "access", "database", "db", "accdb",
+    "tables"
+  ],
+
+  code: [
+    "code", "program", "coding", "script",
+    "build program", "write code",
+    "python", "java", "c++", "cpp", "c",
+    "html", "css", "javascript", "js"
+  ],
+
+  os: [
+    "operating system", "os", "process",
+    "cpu scheduling", "threads"
+  ],
+
+  dbms: [
+    "dbms", "database", "sql", "joins",
+    "normalization"
+  ],
+
+  software: [
+    "software engineering", "sdlc", "srs",
+    "software process"
+  ],
+
+  cs: [
+    "computer science", "algorithm",
+    "data structure", "dsa"
+  ],
+
+  physics: ["physics", "force", "motion"],
+  math: ["math", "mathematics", "calculation"],
+
+  news: ["news", "latest news", "updates"],
+  weather: ["weather", "temperature", "forecast"],
+  stock: ["stock", "market", "share"],
+
+  motivate: [
+    "motivate", "inspire", "encourage",
+    "feeling low", "need motivation"
+  ],
+
+  usage: [
+    "usage", "activity", "daily usage",
+    "how much used"
+  ],
+
+  emotion: [
+    "emotion", "mood", "feeling",
+    "sentiment"
+  ],
+
+  how: [
+    "how it works", "workflow",
+    "architecture", "explain system"
+  ]
+};
+
+
+  // find intent (first matching category)
+ const intent = detectIntent(msg);
+
+  // --- RULE-BASED RESPONSES (Ordered as you asked) ---
+  switch (intent) {
+
+    // 1) GREETINGS & ROUTINES (no buttons)
+    case "greeting":
+      response = `
+        <h2>👋 Hello — Bravexa AI</h2>
+        <p>I'm Bravexa — your workspace assistant. Try: "Generate leave letter", "Compose email", "Make a resume".</p>
+        <p class="muted">Routines: daily summary, reminders, quick greetings.</p>
+      `;
+      break;
+
+    // 2) DOCUMENTATION — LEAVE (copy + send)
+    case "leave":
+      response = `
+        <h2>📄 Leave Letter</h2>
+        <div class="code-block-container">
+          <div class="code-toolbar">
+            <span class="lang-label">📧 mailto</span>
+            <div class="btn-group">
+              <button class="copyBtn">📋 Copy</button>
+              <button class="sendBtn">✉️ Send</button>
+            </div>
+          </div>
+          <pre class="code-content" contenteditable="true">
+To
+The Principal,
+[Your College Name],
+[City].
+
+Subject: Request for Leave
+
+Respected Sir/Madam,
+I am [Your Name], studying in [Your Department].
+I kindly request leave from [Start Date] to [End Date] due to [Reason].
+
+Thanking you,
+Yours faithfully,
+[Your Name]
+          </pre>
         </div>
-        <pre class="ai-doc">${content}</pre>
-      </div>
-    `;
-  }
+      `;
+      break;
 
-  // ========= GREETING =========
-  if (msg.includes("hi") || msg.includes("hello")) {
-    return `
-      ${section("👋 Hello — Bravexa AI",
-        "I can help you with writing, coding, resumes, and more.")}
-      
-      ${section("✨ Try this",
-        "• Create resume\n• Write email\n• Fix code\n• Explain topic")}
-    `;
-  }
+    // 2) DOCUMENTATION — EMAIL (copy + send)
+    case "email":
+      response = `
+        <h2>📧 Official Email</h2>
+        <div class="code-block-container">
+          <div class="code-toolbar">
+            <span class="lang-label">📧 mailto</span>
+            <div class="btn-group">
+              <button class="copyBtn">📋 Copy</button>
+              <button class="sendBtn">✉️ Send</button>
+            </div>
+          </div>
+          <pre class="code-content" contenteditable="true">
+Subject: Regarding Project Discussion
 
-  // ========= EMAIL =========
-  if (msg.includes("email")) {
-    return `
-      ${section("📧 Email Generator",
-        "Here’s a professional email you can use:")}
-
-      ${docBlock("📄 Email",
-`Subject: Request Regarding Project
-
-Dear Sir/Madam,
-
+Dear [Recipient Name],
 I hope you are doing well.
 
-I would like to discuss the project progress and next steps.
-
-Thank you.
+I would like to schedule a short discussion about our project progress and upcoming deadlines.
+Please let me know your availability.
 
 Best regards,
-[Your Name]`,
-        `<button class="copyBtn">📋</button>
-         <button class="sendBtn">✉️</button>`)}
-      
-      ${section("👉 Tip",
-        "Tell me role or company to personalize this.")}
-    `;
-  }
+[Your Name]
+[Your Contact Info]
+          </pre>
+        </div>
+      `;
+      break;
 
-  // ========= RESUME =========
-  if (msg.includes("resume") || msg.includes("cv")) {
-    return `
-      ${section("🧾 Resume Builder",
-        "Simple clean resume format:")}
+    // 2) DOCUMENTATION — RESUME / PROJECT (copy + save)
+    // 🧾 RESUME
+case "resume":
+  response = `
+    <h2>🧾 Resume Template</h2>
+    <div class="code-block-container">
+      <div class="code-toolbar">
+        <span class="lang-label">📄 .docx</span>
+        <div class="btn-group">
+          <button class="copyBtn">📋 Copy</button>
+          <button class="saveBtn">💾 Save</button>
+        </div>
+      </div>
+      <pre class="code-content" contenteditable="true">
+<b>Name:</b> [Your Full Name]  
+<b>Email:</b> [you@example.com]  
+<b>Phone:</b> [Your Number]  
 
-      ${docBlock("📄 Resume",
-`Name: Your Name
-Email: your@email.com
+<b>Objective:</b>  
+To obtain a responsible position where I can utilize my skills and contribute to the organization’s growth.  
 
-Objective:
-To contribute and grow.
+<b>Skills:</b>  
+- Problem Solving  
+- Team Collaboration  
+- Programming (C, Python, Java)  
 
-Skills:
-- Problem Solving
-- Teamwork
+<b>Education:</b>  
+B.Tech in Computer Science, [College Name]  
 
-Education:
-B.Tech CSE
-
-Experience:
-Fresher`,
-        `<button class="copyBtn">📋</button>
-         <button class="saveBtn">💾</button>`)}
-    `;
-  }
-
-  // ========= CODE =========
-  if (msg.includes("code") || msg.includes("program")) {
-    return `
-      ${section("💻 Code Example",
-        "Here’s a simple program:")}
-
-      ${docBlock("JavaScript",
-`function greet(name){
-  console.log("Hello " + name);
-}
-greet("User");`,
-        `<button class="copyBtn">📋</button>`)}
-    `;
-  }
-
-  // ========= EXPLAIN =========
-  if (msg.includes("how") || msg.includes("explain")) {
-    return `
-      ${section("🧠 Explanation",
-        "Let’s break it step by step:")}
-
-      ${section("1️⃣ Input",
-        "User gives a request")}
-
-      ${section("2️⃣ Process",
-        "System detects intent")}
-
-      ${section("3️⃣ Output",
-        "Generates response")}
-    `;
-  }
-
-  // ========= DEFAULT (GEMINI STYLE) =========
-  return `
-    ${section("✨ Bravexa AI",
-      "I understood your request.")}
-
-    ${section("💡 Answer",
-      `${userMessage}`)}
-
-    ${section("🚀 Next",
-      "Ask me to generate, explain, or build something.")}
+<b>Experience:</b>  
+Intern – Web Developer, [Company Name]  
+      </pre>
+    </div>
   `;
+  break;
+
+// 📃 CV TEMPLATE
+case "resume":
+  response = `
+    <h2>📃 Curriculum Vitae</h2>
+    <div class="code-block-container">
+      <div class="code-toolbar">
+        <span class="lang-label">🧑‍💼 .docx</span>
+        <div class="btn-group">
+          <button class="copyBtn">📋 Copy</button>
+          <button class="saveBtn">💾 Save</button>
+        </div>
+      </div>
+      <pre class="code-content" contenteditable="true">
+<b>Personal Details:</b>  
+Name: [Your Name]  
+Date of Birth: [DD/MM/YYYY]  
+Address: [Your Address]  
+Email: [you@example.com]  
+Phone: [Your Number]  
+
+<b>Education:</b>  
+- B.Tech in [Branch] – [University Name]  
+- Intermediate – [School Name]  
+
+<b>Achievements:</b>  
+- Won Coding Contest 2025  
+- Best Project Award in Final Year  
+
+<b>Declaration:</b>  
+I hereby declare that the above information is true to the best of my knowledge.  
+      </pre>
+    </div>
+  `;
+  break;
+
+// 📘 PROJECT REPORT
+case "project":
+  response = `
+    <h2>📘 Project Report</h2>
+    <div class="code-block-container">
+      <div class="code-toolbar">
+        <span class="lang-label">📄 .txt</span>
+        <div class="btn-group">
+          <button class="copyBtn">📋 Copy</button>
+          <button class="saveBtn">💾 Save</button>
+        </div>
+      </div>
+      <pre class="code-content" contenteditable="true">
+<b>Title:</b> Smart Chatbot Assistant using Bravexa AI  
+
+<b>Abstract:</b>  
+This project focuses on developing a rule-based AI chatbot capable of generating templates,  
+handling documentation tasks, and automating conversation workflows.
+
+<b>Modules:</b>  
+1. User Interface  
+2. Rule-based Response Layer  
+3. File Generator System  
+
+<b>Tools Used:</b>  
+HTML, CSS, JavaScript  
+
+<b>Conclusion:</b>  
+The chatbot automates daily communication and document creation efficiently.  
+      </pre>
+    </div>
+  `;
+  break;
+
+    // 2) DOCUMENTATION — Word (copy + save)
+    case "word":
+      response = `
+        <h2>📝 Microsoft Word / Report</h2>
+        <div class="code-block-container">
+          <div class="code-toolbar">
+            <span class="lang-label">📄 .docx</span>
+            <div class="btn-group">
+              <button class="copyBtn">📋 Copy</button>
+              <button class="saveBtn">💾 Save</button>
+            </div>
+          </div>
+          <pre class="code-content" contenteditable="true">
+Title: Annual Business Report
+
+Introduction:
+This report outlines performance, challenges and strategy.
+
+Key Highlights:
+- Revenue growth: 15%
+- New markets: 3 regions
+
+Conclusion:
+Focus on operational excellence.
+          </pre>
+        </div>
+      `;
+      break;
+
+    // 2) DOCUMENTATION — Excel (copy + save)
+    // === EXCEL / SHEET ===
+case "excel":        
+  response = `        
+    <h2>📊 Excel / Sheet</h2>        
+    <div class="code-block-container">        
+      <div class="code-toolbar">        
+        <span class="lang-label">📈 .xlsx</span>        
+        <div class="btn-group">        
+          <button class="copyBtn">📋 Copy</button>        
+          <button class="saveBtn">💾 Save</button>        
+        </div>        
+      </div>        
+
+      <pre class="code-content" contenteditable="true">        
+📅 Month | 💰 Sales | 📈 Profit | 🧾 Expense  
+-------------------------------------------  
+January  | 12000    | 4000      | 2000  
+February | 15000    | 5000      | 2500  
+March    | 18000    | 6000      | 3000  
+April    | 21000    | 7000      | 3500  
+
+💡 Tip: You can track growth percentage or add totals below.  
+      </pre>        
+    </div>        
+  `;        
+  break;        
+
+
+// === POWERPOINT / PRESENTATION ===
+case "powerpoint":        
+  response = `        
+    <h2>🎞️ Presentation (PPT)</h2>        
+    <div class="code-block-container">        
+      <div class="code-toolbar">        
+        <span class="lang-label">📽 .pptx</span>        
+        <div class="btn-group">        
+          <button class="copyBtn">📋 Copy</button>        
+          <button class="saveBtn">💾 Save</button>        
+        </div>        
+      </div>        
+
+      <pre class="code-content" contenteditable="true">        
+📘 Slide 1: Title  
+Introduce your topic or project clearly.  
+
+💡 Slide 2: Objective  
+State your main purpose in one or two lines.  
+
+🧩 Slide 3: Key Points  
+List your main ideas or solutions briefly.  
+
+📊 Slide 4: Results / Data  
+Show your key findings or outcomes.  
+
+🚀 Slide 5: Conclusion  
+Wrap up with summary and call to action.  
+      </pre>        
+    </div>        
+  `;        
+  break;
+    
+    // 2) DOCUMENTATION — Access (copy + save)
+    // === ACCESS / DATABASE ===
+case "access":        
+  response = `        
+    <h2>🗄️ Microsoft Access Database</h2>        
+    <div class="code-block-container">        
+      <div class="code-toolbar">        
+        <span class="lang-label">📚 .accdb</span>        
+        <div class="btn-group">        
+          <button class="copyBtn">📋 Copy</button>        
+          <button class="saveBtn">💾 Save</button>        
+        </div>        
+      </div>        
+
+      <pre class="code-content" contenteditable="true">        
+📋 Table Name: Employees  
+-------------------------------------------  
+| ID | Name        | Department | Salary |  
+|----|--------------|-------------|--------|  
+| 1  | John Smith   | HR          | 45000  |  
+| 2  | Priya Patel  | IT          | 60000  |  
+| 3  | Arjun Mehta  | Finance     | 55000  |  
+| 4  | Emma Brown   | Marketing   | 52000  |  
+
+📋 Table Name: Projects  
+-------------------------------------------  
+| ProjectID | ProjectName    | StartDate  | EndDate    |  
+|------------|----------------|-------------|------------|  
+| P001       | Bravexa AI     | 2025-01-01  | 2025-06-30 |  
+| P002       | Valantine AI   | 2025-02-10  | 2025-07-30 |  
+| P003       | Clarity Voice  | 2025-03-05  | 2025-08-20 |  
+
+🔗 Relationship Example:  
+Employees.ID → Projects.ProjectID (Manager Assigned)  
+
+💡 Tip: Use this format to visualize Access tables and relationships before building your database.  
+      </pre>        
+    </div>        
+  `;        
+  break;
+
+    // 3) CODE GENERATOR (copy only) - support many languages
+    case "code": {
+      // detect language
+      let lang = "javascript";
+      if (msg.includes("python")) lang = "python";
+      else if (msg.includes("c++") || msg.includes("cpp")) lang = "cpp";
+      else if (msg.includes("c")) lang = "c";
+      else if (msg.includes("java")) lang = "java";
+      else if (msg.includes("html")) lang = "html";
+      else if (msg.includes("css")) lang = "css";
+      else if (msg.includes("js") || msg.includes("javascript")) lang = "javascript";
+
+      const templates = {
+        c: `#include <stdio.h>\nint main(){ printf("Hello C\\n"); return 0; }`,
+        cpp: `#include <iostream>\nusing namespace std;\nint main(){ cout << "Hello C++\\n"; return 0; }`,
+        python: `def greet(name):\n    print(f"Hello, {name}")\n\ngreet("Bravexa User")`,
+        java: `public class Main { public static void main(String[] args){ System.out.println("Hello Java"); } }`,
+        html: `<!doctype html>\n<html>\n  <body>\n    <h1>Hello Bravexa</h1>\n  </body>\n</html>`,
+        css: `body { font-family: Arial; background: #fff; color: #333; }`,
+        javascript: `function greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("Bravexa User");`
+      };
+
+      const snippet = templates[lang] || templates.javascript;
+
+      response = `
+        <h2>💻 ${lang.toUpperCase()} Code</h2>
+        <div class="code-block-container">
+          <div class="code-toolbar">
+            <span class="lang-label">${lang.toUpperCase()}</span>
+            <div class="btn-group">
+              <button class="copyBtn">📋 Copy</button>
+            </div>
+          </div>
+          <pre class="code-content"><code>${snippet}</code></pre>
+        </div>
+      `;
+      break;
+    }
+
+    // 4) SUBJECTS & ACADEMICS (no buttons)
+    case "cs":
+      response = `
+        <h2>💻 Computer Science</h2>
+        <p><b>Topic:</b> Time Complexity — Binary Search → O(log n)</p>
+      `;
+      break;
+    case "os":
+      response = `
+        <h2>🖥️ Operating Systems</h2>
+        <p><b>Concept:</b> Process scheduling — Round Robin, FCFS, SJF, Priority</p>
+      `;
+      break;
+    case "dbms":
+      response = `
+        <h2>🗄️ DBMS / SQL</h2>
+        <p><b>Note:</b> JOIN types — INNER, LEFT, RIGHT, FULL. Normalize to 3NF for schema design.</p>
+      `;
+      break;
+    case "software":
+      response = `
+        <h2>📐 Software Engineering</h2>
+        <p><b>Topic:</b> SDLC phases — Requirements → Design → Implementation → Testing → Deployment</p>
+      `;
+      break;
+    case "physics":
+      response = `<h2>⚛️ Physics</h2><p>Newton's laws — F = m × a</p>`;
+      break;
+    case "math":
+      response = `<h2>📐 Mathematics</h2><p>Calculus: d/dx(x²) = 2x</p>`;
+      // Note: fall-through to default handled by break below if needed
+      break;
+
+    // 5) NEWS / WEATHER / STOCK
+      case "news":
+  response = `
+    <h2>📰 News Snapshot</h2>
+    <p>Sample content to demonstrate intent handling and UI rendering.</p>
+
+    <ul class="info-list">
+      <li>🌐 AI: Small-model optimization techniques gaining traction.</li>
+      <li>📈 Markets: Tech stocks show mixed short-term trends.</li>
+      <li>🚀 Space: New small launch vehicle completes test phase.</li>
+    </ul>
+
+    <p class="note">Demo content — live news requires external APIs.</p>
+  `;
+break;
+
+
+   case "weather":
+  response = `
+    <h2>☀️ Weather Overview</h2>
+    <p>Illustrative weather response (no API).</p>
+
+    <ul class="info-list">
+      <li><b>Location:</b> Sample City</li>
+      <li><b>Current:</b> 28°C — Partly Cloudy</li>
+      <li><b>Range:</b> 30°C / 22°C</li>
+    </ul>
+
+    <p class="note">Static demo — real-time data requires API integration.</p>
+  `;
+break;
+
+
+    case "stock":
+  response = `
+    <h2>📈 Stock Snapshot</h2>
+    <p><b>Sample:</b> BRAVEXA (BRV) — ₹120.50 (▲ 1.8%)</p>
+
+    <div class="visual-card">
+      <div class="visual-toolbar">
+        <span class="label">🔁 Response Flow</span>
+      </div>
+
+      <svg width="280" height="220" viewBox="0 0 280 220">
+        <rect x="60" y="10" width="160" height="35" rx="8" />
+        <rect x="60" y="65" width="160" height="35" rx="8" />
+        <rect x="60" y="120" width="160" height="35" rx="8" />
+        <rect x="60" y="175" width="160" height="35" rx="8" />
+
+        <text x="140" y="33" text-anchor="middle">User Input</text>
+        <text x="140" y="88" text-anchor="middle">Intent Detection</text>
+        <text x="140" y="143" text-anchor="middle">Rule Logic</text>
+        <text x="140" y="198" text-anchor="middle">Mock Response</text>
+
+        <line x1="140" y1="45" x2="140" y2="65" />
+        <line x1="140" y1="100" x2="140" y2="120" />
+        <line x1="140" y1="155" x2="140" y2="175" />
+      </svg>
+    </div>
+
+    <p class="note">Demo only — live data requires API integration.</p>
+  `;
+break;
+
+
+ case "usage":
+  response = `
+    <h2>📊 Weekly Usage</h2>
+    <p>Simulated interaction frequency across days.</p>
+
+    <div class="visual-card">
+      <div class="visual-toolbar">
+        <span class="label">📈 Usage Pattern</span>
+      </div>
+
+      <svg width="260" height="160">
+        <rect x="40" y="80" width="30" height="60" rx="4" />
+        <rect x="90" y="60" width="30" height="80" rx="4" />
+        <rect x="140" y="40" width="30" height="100" rx="4" />
+        <rect x="190" y="90" width="30" height="50" rx="4" />
+
+        <text x="45" y="150">Mon</text>
+        <text x="95" y="150">Tue</text>
+        <text x="145" y="150">Wed</text>
+        <text x="195" y="150">Thu</text>
+      </svg>
+    </div>
+
+    <p class="note">Frontend-rendered demo data (no analytics API).</p>
+  `;
+break;
+
+
+
+ case "emotion":
+  response = `
+    <h2>💙 Emotion Distribution</h2>
+    <p>Rule-based emotional signal mapping.</p>
+
+    <div class="visual-card">
+      <div class="visual-toolbar">
+        <span class="label">💭 Emotion Mapping</span>
+      </div>
+
+      <svg width="260" height="160">
+        <rect x="40" y="50" width="30" height="90" rx="4" />
+        <rect x="90" y="80" width="30" height="60" rx="4" />
+        <rect x="140" y="100" width="30" height="40" rx="4" />
+        <rect x="190" y="60" width="30" height="80" rx="4" />
+
+        <text x="45" y="150">😊</text>
+        <text x="95" y="150">😢</text>
+        <text x="145" y="150">😠</text>
+        <text x="195" y="150">❤️</text>
+      </svg>
+    </div>
+
+    <p class="note">Emotion classification via keyword heuristics.</p>
+  `;
+break;
+
+
+
+ case "how":
+  response = `
+    <h2>🧠 How Bravexa Works</h2>
+    <p>High-level frontend processing flow.</p>
+
+    <div class="visual-card">
+      <div class="visual-toolbar">
+        <span class="label">⚙️ System Architecture</span>
+      </div>
+
+      <svg width="300" height="220">
+        <rect x="90" y="10" width="120" height="30" rx="6"/>
+        <text x="150" y="30" text-anchor="middle">User Input</text>
+
+        <line x1="150" y1="40" x2="150" y2="70"/>
+
+        <rect x="70" y="70" width="160" height="30" rx="6"/>
+        <text x="150" y="90" text-anchor="middle">Intent Matcher</text>
+
+        <line x1="150" y1="100" x2="150" y2="130"/>
+
+        <rect x="50" y="130" width="200" height="30" rx="6"/>
+        <text x="150" y="150" text-anchor="middle">Rule-based Response</text>
+
+        <line x1="150" y1="160" x2="150" y2="190"/>
+
+        <rect x="90" y="190" width="120" height="30" rx="6"/>
+        <text x="150" y="210" text-anchor="middle">UI Render</text>
+      </svg>
+    </div>
+
+    <p class="note">Entirely client-side — no server or LLM dependency.</p>
+  `;
+break
+
+
+    // MOTIVATION
+    case "motivate":
+      response = `<h2>🚀 Motivation</h2><p>Take small daily steps — consistent improvement beats fast perfection.</p>`;
+      break;
+
+    // DEFAULT (examples)
+    default:
+      response = `
+        <h2>✨ Bravexa AI — Ready</h2>
+        <p>I can create docs, code snippets, notes, and quick reports. Try one of these:</p>
+        <ul>
+          <li>Generate leave letter</li>
+          <li>Compose official email</li>
+          <li>Create resume / project summary</li>
+          <li>Generate C / Python / HTML template</li>
+          <li>Show weather or news</li>
+        </ul>
+      `;
+  } // end switch
+
+  return response;
 }
 // === GLOBAL EVENT DELEGATION FOR BUTTONS ===
 document.addEventListener("click", (e) => {
@@ -434,4 +990,3 @@ screenshotBtn.addEventListener("click", () => {
   });
 }
 });
-
