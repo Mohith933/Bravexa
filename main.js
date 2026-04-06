@@ -102,11 +102,9 @@ if ('webkitSpeechRecognition' in window) {
     newMessage.textContent = message;
     chatWindow.appendChild(newMessage);
     makeMessageVisible(newMessage);
-
-
-
-    // AI typing hearts animation
+
  // AI typing placeholder
+// Create AI message container
 const aiMessage = document.createElement("div");
 aiMessage.classList.add("message", "ai-message");
 
@@ -118,31 +116,38 @@ const thinkingTexts = [
   "✨ Generating response"
 ];
 
-// Pick random text
 const randomText =
   thinkingTexts[Math.floor(Math.random() * thinkingTexts.length)];
 
+// 👉 Proper dots animation structure
 aiMessage.innerHTML = `
   <div class="ai-thinking">
-    <span class="ai-icon"></span>
     <span class="ai-text">${randomText}</span>
-    <span class="dots"></span>
+    <span class="dots">
+      <span></span><span></span><span></span>
+    </span>
   </div>
 `;
 
 chatWindow.appendChild(aiMessage);
 makeMessageVisible(aiMessage);
 
-  setTimeout(async () => {
+// 👉 AI response
+setTimeout(async () => {
   const response = await generateAIResponse(message);
 
-  // Clear thinking UI smoothly
-  aiMessage.innerHTML = "";
+  // Smooth fade out thinking
+  aiMessage.querySelector(".ai-thinking").style.opacity = "0";
 
-  // Type effect (your function)
-  typeText(aiMessage, response);
+  setTimeout(() => {
+    aiMessage.innerHTML = ""; // clear
 
-  saveMessage(currentChatId, "ai", response);
+    // 👉 Typewriter effect
+    typeText(aiMessage, response);
+
+    saveMessage(currentChatId, "ai", response);
+  }, 300);
+
 }, 1000);
     
   }
