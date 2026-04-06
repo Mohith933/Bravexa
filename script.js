@@ -45,6 +45,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+function fillInput(text) {
+    const input = document.getElementById("userInput");
+    input.value = text;
+}
+
+// Attach events
+document.getElementById("resumeBtn").addEventListener("click", () => {
+    fillInput("Create a resume for me");
+});
+
+document.getElementById("codeBtn").addEventListener("click", () => {
+    fillInput("Fix my code error");
+});
+
+document.getElementById("websiteBtn").addEventListener("click", () => {
+    fillInput("Build a website");
+});
+
+document.getElementById("writeBtn").addEventListener("click", () => {
+    fillInput("Write a message");
+});
 
 
   // === AUTO RESIZE TEXTAREA ===
@@ -242,28 +263,21 @@ selectedFile = null;
 
     // AI typing placeholder
   // AI typing placeholder
-const aiMessage = document.createElement("div");
-aiMessage.classList.add("message", "ai-message");
+  const aiMessage = document.createElement("div");
+  aiMessage.classList.add("message", "ai-message", "loading"); // 'loading' class for special styling
 
-// Dynamic texts
-const thinkingTexts = [
-  "⚡ Thinking",
-  "🧠 Analyzing",
-  "🔍 Looking deeper",
-  "✨ Generating response"
-];
-
-// Pick random text
-const randomText =
-  thinkingTexts[Math.floor(Math.random() * thinkingTexts.length)];
-
-aiMessage.innerHTML = `
-  <div class="ai-thinking">
-    <span class="ai-icon"></span>
-    <span class="ai-text">${randomText}</span>
-    <span class="dots"></span>
-  </div>
-`;
+  aiMessage.innerHTML = `
+    <div class="gemini-loader">
+      <div class="ai-icon-wrapper">
+        <img src="chat.png" class="ai-pulse-icon">
+      </div>
+      <div class="shimmer-container">
+        <div class="shimmer-line"></div>
+        <div class="shimmer-line short"></div>
+      </div>
+    </div>
+  `;
+  
 
 chatWindow.appendChild(aiMessage);
 makeMessageVisible(aiMessage);
@@ -272,7 +286,8 @@ makeMessageVisible(aiMessage);
   const response = await generateAIResponse(userMessage, FileForAi);
 
   // Clear thinking UI smoothly
-  aiMessage.innerHTML = "";
+    aiMessage.classList.remove("loading");
+    aiMessage.innerHTML = "";
 
   // Type effect (your function)
   typeText(aiMessage, response);
@@ -498,6 +513,19 @@ messageDiv.classList.add("message", msg.sender === "ai" ? "ai-message" : "user-m
 });
   }
 
+  function fillInput(text) {
+  const inputField = document.getElementById('userinput');
+  
+  // Set the text
+  inputField.value = text;
+  
+  // Bring the cursor back to the input automatically
+  inputField.focus();
+  
+  // Optional: Scroll to the input if it's off-screen
+  inputField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
   // === SAVE TO LOCAL STORAGE ===
   function saveToLocal() {
     localStorage.setItem("bravexaChats", JSON.stringify(conversations));
@@ -514,41 +542,31 @@ messageDiv.classList.add("message", msg.sender === "ai" ? "ai-message" : "user-m
 
   // === TYPE EFFECT ===
   // === BRAVEXA SMOOTH TYPE EFFECT ===
-function typeText(element, htmlContent, speed = 1) {
-  element.innerHTML = "";
+function typeText(element, htmlContent, speed = 12) {
   let i = 0;
+  element.innerHTML = "";
+
   let lastScroll = 0;
 
-  // This creates a "virtual" div to parse the HTML safely
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = htmlContent;
-  const fullText = tempDiv.innerHTML;
-
   function type() {
-    // Increase the step slightly for a "streaming" feel
-    // Using a smaller increment with requestAnimationFrame looks smoother
-    i += 3; 
+    // increase characters smoothly
+    i += 2; // balanced speed (not jumpy)
+    element.innerHTML = htmlContent.slice(0, i);
 
-    // We use a temporary string to ensure we don't break HTML tags (like <div> or <b>)
-    // while they are being typed.
-    element.innerHTML = fullText.slice(0, i);
-
-    // Auto-scroll logic: only scrolls if the user is near the bottom
+    // auto-scroll only when needed
     const now = Date.now();
-    const isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
-    
-    if (isAtBottom && now - lastScroll > 100) {
+    if (now - lastScroll > 120) {
       window.scrollTo({
         top: document.body.scrollHeight,
-        behavior: "auto" // 'auto' feels more responsive for live typing than 'smooth'
+        behavior: "smooth"
       });
       lastScroll = now;
     }
 
-    if (i < fullText.length) {
+    if (i < htmlContent.length) {
       requestAnimationFrame(type);
     } else {
-      element.innerHTML = fullText; // Final clean render
+      element.innerHTML = htmlContent; // ensure full render
     }
   }
 
@@ -556,27 +574,54 @@ function typeText(element, htmlContent, speed = 1) {
 }
 
 
-  // === AI RESPONSE GENERATOR ===
-  async function generateAIResponse(userMessage, selectedFile) {
+
+async function generateAIResponse(userMessage, selectedFile) {
   const msg = (userMessage || "").toLowerCase().trim();
   const hasText = msg !== "";
   const hasFile = selectedFile !== null;
-  
-  let intent = detectIntent(msg);
+
+  // Internal Intent Helper
+  const intents = {
+    greeting: ["hello", "hi", "hey", "bravexa"],
+    leave: ["leave", "absent", "permission"],
+    email: ["email", "mail", "draft", "compose"],
+    resume: ["resume", "cv"],
+    project: ["project", "report"],
+    code: ["code", "python", "javascript", "program"],
+    dbms: ["dbms", "sql", "database"],
+    os: ["os", "operating system"],
+    website: ["website", "html", "css", "web", "page", "frontend"],
+  fix: ["fix", "debug", "error", "solve", "bug", "issue"],
+  write: ["write", "essay", "blog", "story", "content", "draft"]
+  };
+
+  function getBestIntent(m) {
+    let bestMatch = "default";
+    let maxScore = 0;
+    for (const [intentName, keywords] of Object.entries(intents)) {
+      let score = 0;
+      keywords.forEach(k => { if (m.includes(k)) score += k.length; });
+      if (score > maxScore) { maxScore = score; bestMatch = intentName; }
+    }
+    return bestMatch;
+  }
+
+  let intent = getBestIntent(msg);
   let intro = "Ready to help!", body = "", outro = "Let me know if you need changes.";
 
   // --- 1. FILE & IMAGE HANDLER ---
   if (hasFile) {
     const isImg = selectedFile.type.startsWith("image");
-    const hints = isImg 
+    intro = isImg 
       ? (hasText ? "I see your image and note—analyzing now." : "Got the image! What should I do with it?")
       : (hasText ? "File received with your instructions. Processing..." : "File ready. I can summarize or convert it.");
     
-    intro = hints;
-    body = `<h2>${isImg ? '🖼️ Image' : '📄 File'} Insight</h2><p>File: <b>${selectedFile.name}</b></p>`;
+    body = `<h2>${isImg ? '🖼️ Image' : '📄 File'} Insight</h2>
+            <p>Processing: <b>${selectedFile.name}</b></p>
+            <p style="color:var(--accent-cyan);">[Secure Analysis Active]</p>`;
   } 
   
-  // --- 2. TEXT INTENTS (The "Heavy" Logic made Light) ---
+  // --- 2. TEXT INTENTS ---
   else {
     switch (intent) {
       case "greeting":
@@ -586,24 +631,24 @@ function typeText(element, htmlContent, speed = 1) {
         break;
 
       case "email":
-        intro = "Here is a professional email draft for you.";
+        intro = "Here is a professional email draft.";
         body = `<h2>📧 Official Email</h2>
                 <div class="code-block-container">
                   <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
                     <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
                   </div>
-                  <pre class="code-content" contenteditable="true">Subject: [Topic]\n\nDear [Name],\nI hope you're well. I'm writing to discuss [Reason].\n\nBest regards,\n[Your Name]</pre>
+                  <pre class="code-content" contenteditable="true">Subject: [Topic]\n\nDear [Name],\n\nI hope you're well. I'm writing to discuss [Reason].\n\nBest regards,\n[Your Name]</pre>
                 </div>`;
         break;
 
       case "leave":
-        intro = "Leave letter ready. Just fill in your college details.";
+        intro = "Leave letter ready. Just fill in your details.";
         body = `<h2>📄 Leave Letter</h2>
                 <div class="code-block-container">
                   <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
                     <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
                   </div>
-                  <pre class="code-content" contenteditable="true">To\nThe Principal,\n[College Name],\n\nSubject: Leave Request\n\nRespected Sir/Madam,\nI request leave from [Start] to [End] due to [Reason].\n\nYours faithfully,\n[Your Name]</pre>
+                  <pre class="code-content" contenteditable="true">To\nThe Principal,\n[College Name],\n\nSubject: Leave Request\n\nRespected Sir/Madam,\n\nI request leave from [Start] to [End] due to [Reason].\n\nYours faithfully,\n[Your Name]</pre>
                 </div>`;
         break;
 
@@ -622,8 +667,53 @@ function typeText(element, htmlContent, speed = 1) {
       case "code":
         let lang = msg.includes("python") ? "python" : "javascript";
         intro = `Here is your ${lang.toUpperCase()} snippet.`;
-        body = `<h2>💻 Code</h2><pre class="code-content"><code>${lang === 'python' ? 'print("Hello Bravexa")' : 'console.log("Hello Bravexa");'}</code></pre>`;
+        body = `<h2>💻 Code</h2><div class="code-block-container"><pre class="code-content"><code>${lang === 'python' ? 'print("Hello Bravexa")' : 'console.log("Hello Bravexa");'}</code></pre></div>`;
         break;
+
+        case "website":
+    intro = "Static web structure initialized. Here is a modern boilerplate.";
+    body = `<h2>🌐 Web Development</h2>
+            <div class="code-block-container">
+              <div class="code-toolbar"><span class="lang-label">HTML5 / CSS3</span>
+                <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="saveBtn">💾 Save</button></div>
+              </div>
+              <pre class="code-content" contenteditable="true">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; background: #0d1117; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .card { padding: 20px; border: 1px solid #00e1ff; border-radius: 10px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="card"&gt;Welcome to Bravexa AI Web Project&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            </div>`;
+    outro = "Ready to launch? Just save as index.html.";
+    break;
+
+  case "fix":
+    intro = "Debugging mode active. Paste your error below.";
+    body = `<h2>💻 Fix & Debug</h2>
+            <p>I can help find <b>Syntax Errors</b>, <b>Logic Bugs</b>, or <b>Optimization</b> issues.</p>
+            <div class="math-card">
+              <i>"Programming is 10% writing code and 90% fixing it."</i>
+            </div>`;
+    outro = "Paste the code you want me to analyze!";
+    break;
+
+  case "write":
+    intro = "Creative writing module loaded. What are we drafting?";
+    body = `<h2>✍️ Content Creation</h2>
+            <div class="code-block-container">
+              <div class="code-toolbar"><span class="lang-label">📝 DRAFT</span>
+                <div class="btn-group"><button class="copyBtn">📋 Copy</button></div>
+              </div>
+              <pre class="code-content" contenteditable="true">Title: [Enter Title]\n\nIntroduction:\n[Start writing here...]\n\nKey Points:\n- Point 1\n- Point 2\n\nConclusion:\n[Summary]</pre>
+            </div>`;
+    outro = "You can change the format to 'Blog', 'Report', or 'Story'.";
+    break;
 
       case "dbms":
       case "os":
@@ -637,69 +727,14 @@ function typeText(element, htmlContent, speed = 1) {
     }
   }
 
-  // --- FINAL DYNAMIC WRAPPER ---
   return `
-    <p>${intro}</p>
-    <hr>
-    ${body}
-    <hr>
-    <p>${outro}</p>
+    <div class="bravexa-intro">${intro}</div>
+    <hr class="bravexa-divider">
+    <div class="bravexa-body">${body}</div>
+    <hr class="bravexa-divider">
+    <div class="bravexa-outro">${outro}</div>
   `;
 }
-  // === ENABLE EDIT + REAL ACTIONS ===
-  document.addEventListener("click", (e) => {
-    const block = e.target.closest(".code-block-container");
-    if (!block) return;
-    const textElement = block.querySelector(".code-content");
-    textElement.setAttribute("contenteditable", "true");
-
-    // --- COPY ---
-    if (e.target.classList.contains("copyBtn")) {
-      const text = textElement.textContent.trim();
-      navigator.clipboard.writeText(text);
-      alert("✅ Copied to clipboard!");
-    }
-
-    // --- SEND EMAIL ---
-    if (e.target.classList.contains("sendBtn")) {
-      const body = encodeURIComponent(textElement.textContent.trim());
-      const mailto = `mailto:?subject=Bravexa Document&body=${body}`;
-      window.location.href = mailto;
-    }
-
-    // --- SAVE TXT / DOCX / XLSX / PPTX ---
-    if (e.target.classList.contains("saveBtn")) {
-      const text = textElement.textContent.trim();
-
-      // detect file type
-      const fileType = block.getAttribute("data-type") || "txt";
-
-      let blob, filename;
-      switch (fileType) {
-        case "word":
-          filename = "document.docx";
-          blob = new Blob([text], { type: "application/msword" });
-          break;
-        case "excel":
-          filename = "sheet.xlsx";
-          blob = new Blob([text], { type: "application/vnd.ms-excel" });
-          break;
-        case "ppt":
-          filename = "presentation.pptx";
-          blob = new Blob([text], { type: "application/vnd.ms-powerpoint" });
-          break;
-        default:
-          filename = "document.txt";
-          blob = new Blob([text], { type: "text/plain" });
-      }
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    }
-  });
 
   // === VOICE BUTTON ===
   document.addEventListener("click", function (e) {
@@ -708,6 +743,42 @@ function typeText(element, htmlContent, speed = 1) {
       speakText(content);
     }
   });
+
+document.addEventListener("click", (e) => {
+  const block = e.target.closest(".code-block-container");
+  if (!block) return;
+  const textElement = block.querySelector(".code-content");
+
+  // --- COPY LOGIC ---
+  if (e.target.classList.contains("copyBtn")) {
+    const text = textElement.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      // Small feedback instead of a heavy alert
+      e.target.innerText = "✅ Done";
+      setTimeout(() => e.target.innerText = "📋 Copy", 2000);
+    });
+  }
+
+  // --- SEND (MAILTO) LOGIC ---
+  if (e.target.classList.contains("sendBtn")) {
+    const fullText = textElement.innerText.trim();
+    
+    // 1. Try to extract Subject line if it exists (e.g., "Subject: Leave Request")
+    let subject = "Bravexa AI - Draft";
+    const subjectMatch = fullText.match(/Subject:\s*(.*)/i);
+    if (subjectMatch) {
+      subject = subjectMatch[1];
+    }
+
+    // 2. Encode the body text for URL safety
+    const encodedBody = encodeURIComponent(fullText);
+    const encodedSubject = encodeURIComponent(subject);
+
+    // 3. Open the Mail client
+    // Note: You can leave 'to' blank so the user fills it in manually
+    window.location.href = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
+  }
+});
 
   function speakText(text) {
     window.speechSynthesis.cancel();
