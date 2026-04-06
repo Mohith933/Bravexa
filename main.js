@@ -163,16 +163,20 @@ setTimeout(async () => {
   // === BRAVEXA TYPE EFFECT ===  
 function typeText(element, htmlContent, speed = 12) {
   let i = 0;
+
+  // Create temp element to extract text only
+  const temp = document.createElement("div");
+  temp.innerHTML = htmlContent;
+  const textContent = temp.innerText;
+
   element.innerHTML = "";
 
   let lastScroll = 0;
 
   function type() {
-    // increase characters smoothly
-    i += 2; // balanced speed (not jumpy)
-    element.innerHTML = htmlContent.slice(0, i);
+    i += 2;
+    element.innerText = textContent.slice(0, i);
 
-    // auto-scroll only when needed
     const now = Date.now();
     if (now - lastScroll > 120) {
       window.scrollTo({
@@ -182,10 +186,10 @@ function typeText(element, htmlContent, speed = 12) {
       lastScroll = now;
     }
 
-    if (i < htmlContent.length) {
+    if (i < textContent.length) {
       requestAnimationFrame(type);
     } else {
-      element.innerHTML = htmlContent; // ensure full render
+      element.innerHTML = htmlContent; // ✅ final correct render
     }
   }
 
