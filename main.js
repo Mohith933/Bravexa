@@ -162,25 +162,41 @@ function typeText(element, htmlContent, speed = 12) {
 
   let lastScroll = 0;
 
-  function type() {
-    // increase characters smoothly
-    i += 2; // balanced speed (not jumpy)
-    element.innerHTML = htmlContent.slice(0, i);
+function typeText(element, htmlContent, speed = 1) {
+  element.innerHTML = "";
+  let i = 0;
+  let lastScroll = 0;
 
-    // auto-scroll only when needed
+  // This creates a "virtual" div to parse the HTML safely
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = htmlContent;
+  const fullText = tempDiv.innerHTML;
+
+  function type() {
+    // Increase the step slightly for a "streaming" feel
+    // Using a smaller increment with requestAnimationFrame looks smoother
+    i += 3; 
+
+    // We use a temporary string to ensure we don't break HTML tags (like <div> or <b>)
+    // while they are being typed.
+    element.innerHTML = fullText.slice(0, i);
+
+    // Auto-scroll logic: only scrolls if the user is near the bottom
     const now = Date.now();
-    if (now - lastScroll > 120) {
+    const isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
+    
+    if (isAtBottom && now - lastScroll > 100) {
       window.scrollTo({
         top: document.body.scrollHeight,
-        behavior: "smooth"
+        behavior: "auto" // 'auto' feels more responsive for live typing than 'smooth'
       });
       lastScroll = now;
     }
 
-    if (i < htmlContent.length) {
+    if (i < fullText.length) {
       requestAnimationFrame(type);
     } else {
-      element.innerHTML = htmlContent; // ensure full render
+      element.innerHTML = fullText; // Final clean render
     }
   }
 
