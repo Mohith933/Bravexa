@@ -356,7 +356,7 @@ body.light-mode .header .btn.solid {
   width: 100%;
   max-width: 51%;
   display: flex;
-   padding-bottom: 50px; 
+padding: 10px 12px 90px;
   flex-direction: column;
   background-color: transparent;
 }
@@ -581,11 +581,13 @@ body.light-mode .header .btn.solid {
 /* ================= Messages ================= */
 .message {
   max-width: 100%;
-  margin: 8px;
+  margin: 12px 0;
   border-radius: 18px;
   font-size: 15px;
   line-height: 1.4;
   opacity: 0;
+padding: 10px 14px;
+  border-radius: 12px;
   transform: translateY(15px);
   transition: all 0.3s ease-in-out;
 }
@@ -612,11 +614,13 @@ overflow: visible;
   word-break: break-word;
   white-space: pre-wrap;
 }
+
+
 .user-image{
   background:transparent;
   color: #fff;
   max-width:80%;
-  margin-left: auto;
+  margin: 10px 0 6px auto; 
   border-bottom-right-radius: 5px;
   text-align: right;
   overflow: visible;
@@ -626,7 +630,7 @@ overflow: visible;
 .ai-message {
   background: transparent;
   color: #e0e6ed;
-  margin-right:0px;
+margin: 6px 0 14px 0;
   border-bottom-left-radius: 5px;
   text-align: left;
 }
