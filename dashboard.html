@@ -36,18 +36,18 @@
   <!-- Header / Navbar -->
   <header class="header">
       <button id="menuToggle" class="menu-btn">☰</button>
-    <h4>Vesper 1.0</h4>
+      <h4>Vesper<span class="grey">1.0</span></h4>
       <button id="editLogoBtn" class="edit-btn">✏️</button>
   </header>
 
   <!-- Hero Section -->
   <div class="hero">
     <h1>Good morning, <span id="username">User</span>!</h1>
-    <div class="suggestions">
-  <button onclick="fillInput('Create a resume for me')">📄 Resume</button>
-  <button onclick="fillInput('Fix my code error')">💻 Fix Code</button>
-  <button onclick="fillInput('Build a website')">🌐 Website</button>
-  <button onclick="fillInput('Write a message')">✍️ Write</button>
+  <div class="suggestions">
+  <button id="resumeBtn">📄 Resume</button>
+  <button id="codeBtn">💻 Fix Code</button>
+  <button id="websiteBtn">🌐 Website</button>
+  <button id="writeBtn">✍️ Write</button>
 </div>
   </div>
 
@@ -58,7 +58,7 @@
   <!-- Bravexa AI Chat Input -->
 <div class="input-box">
   <div id="previewContainer" class="preview-container"></div>
-  <textarea placeholder="Message Bravexa AI..." class="chatbox" id="userInput"></textarea>
+  <textarea placeholder="Message Bravexa AI..." class="chatbox" id="userinput"></textarea>
 
   <div class="bottom-row">
     <div class="left-section">
@@ -93,4 +93,3 @@
 </body>
 
 </html>
-
