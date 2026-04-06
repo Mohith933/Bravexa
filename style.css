@@ -53,7 +53,49 @@ body {
       font-weight: 700;
       font-size:1rem;
 }
+.ai-block {
+  margin-bottom: 12px;
+}
 
+.ai-title {
+  color: #00e1ff;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.ai-content {
+  color: #e6f7ff;
+  line-height: 1.5;
+}
+
+.ai-doc-block {
+  background: #111;
+  border-radius: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0,255,200,0.1);
+}
+
+.ai-doc-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #1a1a1a;
+  font-size: 12px;
+}
+
+.ai-doc {
+  padding: 10px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.ai-actions button {
+  background: none;
+  border: none;
+  color: #00e1ff;
+  cursor: pointer;
+}
 .left{
   margin-left:10px;
 }
