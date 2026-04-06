@@ -230,6 +230,32 @@ body.light-mode .header .btn.solid {
   opacity: 0;
 }
 
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.suggestions button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: #cceeff;
+  padding: 10px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+/* Hover effect */
+.suggestions button:hover {
+  background: rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
 .logo:hover .edit-logo-btn {
   display: block;
   opacity: 1;
@@ -930,7 +956,7 @@ body.light-mode .dropdown li a:hover {
   padding:10px;
   width:100%;
   background: #0e0e0e;
-  font-size: 0.8rem;
+font-size:10px;
   color: #a0c4ff;
 }
 
