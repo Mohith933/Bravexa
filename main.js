@@ -57,6 +57,8 @@ if ('webkitSpeechRecognition' in window) {
   alert('Speech Recognition not supported in this browser 😞');
 }
 
+
+
   // === MESSAGE SEND EVENTS ===
   sendBtn.addEventListener('click', sendMessage);
   chatbox.addEventListener('keydown', function (event) {
@@ -69,12 +71,11 @@ if ('webkitSpeechRecognition' in window) {
   // === SEND MESSAGE ===
   function sendMessage() {
     const userMessage = chatbox.value.trim();
-    if (!userMessage && !selectedFile) return;
-    
     if (userMessage) {
       addMessageToChat(userMessage);
       chatbox.value = "";
     }
+
     // Hide hero and set layout
     hero.style.display = "none";
     inputArea.style.position = "fixed";
@@ -90,62 +91,49 @@ if ('webkitSpeechRecognition' in window) {
     chatWindow.style.display = "flex";
     footer.style.fontSize = "10px";
     footer.innerHTML = "⚡ Bravexa AI Verify important details.";
+  
   }
-
-
 
    // Show messages inside chat window
-  function addMessageToChat(message) {
-    // User message
-    const newMessage = document.createElement("div");
-    newMessage.classList.add("message", "user-message");
-    newMessage.textContent = message;
-    chatWindow.appendChild(newMessage);
-    makeMessageVisible(newMessage);
+ function addMessageToChat(message) {
+  // --- 1. User Message ---
+  const newMessage = document.createElement("div");
+  newMessage.classList.add("message", "user-message");
+  newMessage.textContent = message;
+  chatWindow.appendChild(newMessage);
+  makeMessageVisible(newMessage);
 
+  // --- 2. Bravexa AI Loader (Gemini Style) ---
+  const aiMessage = document.createElement("div");
+  aiMessage.classList.add("message", "ai-message", "loading"); // 'loading' class for special styling
 
-
-    // AI typing hearts animation
- // AI typing placeholder
-const aiMessage = document.createElement("div");
-aiMessage.classList.add("message", "ai-message");
-
-// Dynamic texts
-const thinkingTexts = [
-  "⚡ Thinking",
-  "🧠 Analyzing",
-  "🔍 Looking deeper",
-  "✨ Generating response"
-];
-
-// Pick random text
-const randomText =
-  thinkingTexts[Math.floor(Math.random() * thinkingTexts.length)];
-
-aiMessage.innerHTML = `
-  <div class="ai-thinking">
-    <span class="ai-icon"></span>
-    <span class="ai-text">${randomText}</span>
-    <span class="dots"></span>
-  </div>
-`;
-
-chatWindow.appendChild(aiMessage);
-makeMessageVisible(aiMessage);
-
+  aiMessage.innerHTML = `
+    <div class="gemini-loader">
+      <div class="ai-icon-wrapper">
+        <img src="chat.png" class="ai-pulse-icon">
+      </div>
+      <div class="shimmer-container">
+        <div class="shimmer-line"></div>
+        <div class="shimmer-line short"></div>
+      </div>
+    </div>
+  `;
+  
+  chatWindow.appendChild(aiMessage);
+  makeMessageVisible(aiMessage);
+  
+  // --- 3. Trigger Response ---
   setTimeout(async () => {
-  const response = await generateAIResponse(message);
-
-  // Clear thinking UI smoothly
-  aiMessage.innerHTML = "";
-
-  // Type effect (your function)
-  typeText(aiMessage, response);
-
-  saveMessage(currentChatId, "ai", response);
-}, 1000);
+    const response = await generateAIResponse(message);
     
-  }
+    // Remove the loading class and clear the loader
+    aiMessage.classList.remove("loading");
+    aiMessage.innerHTML = "";
+    
+    // Smoothly type the response
+    typeText(aiMessage, response);
+  }, 1500);
+}
 
  // === SCROLL TO SHOW MESSAGES ===
   function makeMessageVisible(messageElement) {
@@ -156,12 +144,6 @@ makeMessageVisible(aiMessage);
   }
 
   // === BRAVEXA TYPE EFFECT ===  
-function typeText(element, htmlContent, speed = 12) {
-  let i = 0;
-  element.innerHTML = "";
-
-  let lastScroll = 0;
-
 function typeText(element, htmlContent, speed = 1) {
   element.innerHTML = "";
   let i = 0;
@@ -203,117 +185,117 @@ function typeText(element, htmlContent, speed = 1) {
   requestAnimationFrame(type);
 }
 // === SIMPLE AI RESPONSES ===
- async function generateAIResponse(userMessage) {
+// === SIMPLE AI RESPONSES ===
+// === BRAVEXA CORE INTELLIGENCE ===
+async function generateAIResponse(userMessage) {
   const msg = (userMessage || "").toLowerCase().trim();
-  let intent = detectIntent(msg);
 
-  let intro = "";
-  let outro = "";
-  let body = "";
+  // 1. Expanded Intents for a "Smarter" Feel
+  const intents = {
+    greeting: ["hello", "hi", "hey", "bravexa", "good morning"],
+    leave: ["leave", "absent", "permission", "sick"],
+    email: ["email", "mail", "compose", "draft"],
+    resume: ["resume", "cv", "portfolio", "job"],
+    code: ["code", "program", "python", "java", "javascript", "script"],
+    dbms: ["dbms", "sql", "database", "table"],
+    math: ["math", "calculus", "derivative", "formula"],
+    how: ["how it works", "workflow", "architecture", "process"],
+    motivate: ["motivate", "inspire", "hard work", "low"]
+  };
 
-  // --- RULE-BASED RESPONSES ---
-  switch (intent) {
+  // 2. Intent Scoring Logic
+  let bestMatch = "default";
+  let maxScore = 0;
+
+  for (const [intentName, keywords] of Object.entries(intents)) {
+    let score = 0;
+    for (const keyword of keywords) {
+      if (msg.includes(keyword)) {
+        score += keyword.length; // Priority to specific keywords
+      }
+    }
+    if (score > maxScore) {
+      maxScore = score;
+      bestMatch = intentName;
+    }
+  }
+
+  let intro = "", body = "", outro = "";
+
+  // 3. Bravexa Styled Responses
+  switch (bestMatch) {
     case "greeting":
-      intro = "Hello! It's great to see you today.";
-      body = `<h2>👋 Hello — Bravexa AI</h2>
-              <p>I'm Bravexa — your workspace assistant. Try: "Generate leave letter" or "Make a resume".</p>`;
-      outro = "How can I help you get started?";
+      intro = "System initialized. Hello! I am Bravexa.";
+      body = `<h2>⚡ Status: Online</h2>
+              <p>I'm your workspace companion, optimized for <b>productivity</b> and <b>academic support</b>.</p>`;
+      outro = "What shall we build or draft today?";
       break;
+
+       case "email":
+        intro = "Here is a professional email draft.";
+        body = `<h2>📧 Official Email</h2>
+                <div class="code-block-container">
+                  <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
+                    <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
+                  </div>
+                  <pre class="code-content" contenteditable="true">Subject: [Topic]\n\nDear [Name],\n\nI hope you're well. I'm writing to discuss [Reason].\n\nBest regards,\n[Your Name]</pre>
+                </div>`;
+        break;
 
     case "leave":
-      intro = "I've prepared a leave letter template for you. Just fill in your details.";
-      body = `<h2>📄 Leave Letter</h2>
+      intro = "Generating a formal leave request for you.";
+      body = `<h2>📄 Leave Letter Template</h2>
               <div class="code-block-container">
-                <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
+                <div class="code-toolbar"><span class="lang-label">FORMAT: OFFICIAL</span>
                   <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
                 </div>
-                <pre class="code-content" contenteditable="true">To\nThe Principal,\n[College],\n\nSubject: Leave Request\n\nRespected Sir/Madam,\nI am [Name]. I request leave from [Start] to [End] due to [Reason].\n\nYours faithfully,\n[Name]</pre>
+                <pre class="code-content" contenteditable="true">To\nThe Principal,\n[Institution Name],\n\nSubject: Application for Leave\n\nRespected Sir/Madam,\nI am writing to formally request leave from [Start Date] to [End Date] due to [Reason]. I will ensure my tasks are up to date.\n\nYours faithfully,\n[Your Name]</pre>
               </div>`;
-      outro = "Make sure to submit this at least a day in advance!";
-      break;
-
-    case "email":
-      intro = "Here is a professional draft for your project discussion.";
-      body = `<h2>📧 Official Email</h2>
-              <div class="code-block-container">
-                <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
-                  <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
-                </div>
-                <pre class="code-content" contenteditable="true">Subject: Project Discussion\n\nDear [Name],\nI hope you are well. I'd like to discuss our project progress. Let me know your availability.\n\nBest,\n[Your Name]</pre>
-              </div>`;
-      outro = "I can help you rewrite this if you need a different tone.";
-      break;
-
-    case "resume":
-      intro = "A clean resume is the first step to your dream job. Here is a solid template.";
-      body = `<h2>🧾 Resume Template</h2>
-              <div class="code-block-container">
-                <div class="code-toolbar"><span class="lang-label">📄 .docx</span>
-                  <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="saveBtn">💾 Save</button></div>
-                </div>
-                <pre class="code-content" contenteditable="true"><b>Name:</b> [Your Name]\n<b>Skills:</b> Python, JS, C++\n<b>Education:</b> B.Tech in CSE\n<b>Internship:</b> Web Dev at [Company]</pre>
-              </div>`;
-      outro = "Pro-tip: Keep your resume to a single page for maximum impact.";
+      outro = "Tip: Make sure the reason is clear and concise.";
       break;
 
     case "code":
       let lang = msg.includes("python") ? "python" : (msg.includes("java") ? "java" : "javascript");
-      intro = `I've generated a basic ${lang.toUpperCase()} starter for you.`;
-      const codeTpl = {
-        python: "def main():\n    print('Hello Bravexa')\nmain()",
-        java: "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello\");\n  }\n}",
-        javascript: "console.log('Hello Bravexa');"
+      intro = `Logic sequence initiated for ${lang.toUpperCase()}.`;
+      const templates = {
+        python: "def bravexa_init():\n    print('Bravexa AI System Active')\n\nbravexa_init()",
+        java: "public class Bravexa {\n  public static void main(String[] args) {\n    System.out.println(\"System Online\");\n  }\n}",
+        javascript: "const bravexa = () => {\n  console.log('Hello from Bravexa AI');\n};\nbravexa();"
       };
-      body = `<h2>💻 ${lang.toUpperCase()} Code</h2>
+      body = `<h2>💻 ${lang.toUpperCase()} Snippet</h2>
               <div class="code-block-container">
                 <div class="code-toolbar"><span class="lang-label">${lang.toUpperCase()}</span>
                   <div class="btn-group"><button class="copyBtn">📋 Copy</button></div>
                 </div>
-                <pre class="code-content"><code>${codeTpl[lang] || codeTpl.javascript}</code></pre>
+                <pre class="code-content"><code>${templates[lang]}</code></pre>
               </div>`;
-      outro = "Happy coding! Let me know if you need specific logic.";
-      break;
-
-    case "dbms":
-      intro = "Database management is crucial for any application. Here is a quick note.";
-      body = `<h2>🗄️ DBMS / SQL</h2>
-              <p><b>Note:</b> Focus on JOIN types (Inner, Left, Right) and 3NF Normalization for your exams.</p>`;
-      outro = "Would you like me to generate a sample SQL query for you?";
+      outro = "Logic check complete. Need specific functions added?";
       break;
 
     case "math":
-      intro = "Calculus made easy! Here is the derivative you were looking for.";
-      body = `<h2>📐 Mathematics</h2><p>Rule: $$\\frac{d}{dx}(x^2) = 2x$$</p>`;
-      outro = "Math is just logic with numbers!";
-      break;
-
-    case "how":
-      intro = "Curious about how I process your requests? Here is the workflow.";
-      body = `<h2>🧠 How Bravexa Works</h2>
-              <p>1. <b>Input:</b> You type a message.<br>2. <b>Intent:</b> I detect keywords.<br>3. <b>Logic:</b> I pick the right template.<br>4. <b>Render:</b> I display the result.</p>`;
-      outro = "I run entirely on your browser for maximum speed.";
-      break;
-
-    case "motivate":
-      intro = "Feeling a bit low? Remember this:";
-      body = `<h2>🚀 Motivation</h2><p>Small daily steps lead to massive long-term results. Keep going!</p>`;
-      outro = "You've got this!";
+      intro = "Processing mathematical expression...";
+      body = `<h2>📐 Calculation/Rule</h2>
+              <p>For the function $f(x) = x^n$, the derivative is:</p>
+              <div class="math-card">
+                $$\\frac{d}{dx}(x^n) = nx^{n-1}$$
+              </div>`;
+      outro = "Calculus module active. Send me any equation.";
       break;
 
     default:
-      intro = "I'm ready to help with your workspace tasks.";
-      body = `<h2>✨ Bravexa AI</h2>
-              <p>Try asking me to <b>write an email</b>, <b>create a resume</b>, or <b>generate code</b>.</p>`;
-      outro = "What should we work on next?";
+      intro = "Awaiting command...";
+      body = `<h2>✨ Bravexa Workspace</h2>
+              <p>I can assist with <b>Emails</b>, <b>Resumes</b>, <b>Notes</b>, or <b>Programming</b>. Simply state your requirement.</p>`;
+      outro = "Ready when you are.";
   }
 
-  // --- FINAL DYNAMIC STRUCTURE ---
+  // 4. Final Final Render with "Bravexa" Styling
   return `
-    <p>${intro}</p>
-    <hr>
-    ${body}
-    <hr>
-    <p>${outro}</p>
+    <div class="bravexa-intro">${intro}</div>
+    <hr class="bravexa-divider">
+    <div class="bravexa-body">${body}</div>
+    <hr class="bravexa-divider">
+    <div class="bravexa-outro">${outro}</div>
   `;
 }
 // === GLOBAL EVENT DELEGATION FOR BUTTONS ===
@@ -354,42 +336,18 @@ document.addEventListener("click", (e) => {
       uploadDropdown.style.display = "none";
     }
   });
-  const authMessages = [
-  "🔐 Please login to continue.",
-  "🚀 Sign up to unlock this feature.",
-  "👤 Authentication required.",
-  "⚡ Login needed for full access."
-];
-
-function getAuthMessage() {
-  return authMessages[Math.floor(Math.random() * authMessages.length)];
-}
 
 // === LIMITED SELECTED FUNCTIONALITY ===
 document.querySelectorAll("#imageUpload, #videoUpload, #audioUpload").forEach(input => {
   input.addEventListener("change", (event) => {
     const file = event.target.files[0];
-
-    if (file) {
-      alert(`${getAuthMessage}
-
-You're trying to upload:
-📁 ${file.name}
-
-To continue:
-👉 Please Sign Up or Login to Bravexa AI
-
-(This feature will be enabled after authentication)`);
-    }
+    if (file) alert(`Selected: ${file.name}`);
   });
 });
 
+// === SCREENSHOT DEMO ===
 screenshotBtn.addEventListener("click", () => {
-  alert(`🚫 Feature Locked
-
-📸 Screenshot is available only for logged-in users.
-
-👉 Please Login / Sign Up to access Bravexa Dashboard.`);
+  alert("📸 Screenshot feature available only in Bravexa Dashboard.");
 });
 
   // === RESPONSIVE LAYOUT ===
