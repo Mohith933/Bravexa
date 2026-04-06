@@ -1,3 +1,4 @@
+
 /* ===================================
       Bravexa AI — Modern Blue Theme
    =================================== */
@@ -52,49 +53,6 @@ body {
       padding:10px;
       font-weight: 700;
       font-size:1rem;
-}
-.ai-block {
-  margin-bottom: 12px;
-}
-
-.ai-title {
-  color: #00e1ff;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.ai-content {
-  color: #e6f7ff;
-  line-height: 1.5;
-}
-
-.ai-doc-block {
-  background: #111;
-  border-radius: 10px;
-  margin-top: 8px;
-  overflow: hidden;
-  border: 1px solid rgba(0,255,200,0.1);
-}
-
-.ai-doc-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 10px;
-  background: #1a1a1a;
-  font-size: 12px;
-}
-
-.ai-doc {
-  padding: 10px;
-  font-size: 13px;
-  white-space: pre-wrap;
-}
-
-.ai-actions button {
-  background: none;
-  border: none;
-  color: #00e1ff;
-  cursor: pointer;
 }
 .left{
   margin-left:10px;
@@ -620,40 +578,16 @@ overflow: visible;
   background:transparent;
   color: #fff;
   max-width:80%;
-  margin: 10px 0 6px auto; 
+  margin: 10px 0 6px auto; 
   border-bottom-right-radius: 5px;
   text-align: right;
   overflow: visible;
   border-radius: 12px;
 }
 /* AI message (left) */
-.ai-message {
-  background: transparent;
-  color: #e0e6ed;
-margin: 6px 0 14px 0;
-  border-bottom-left-radius: 5px;
-  text-align: left;
-}
 
-.ai-message h2 {
-  color: #90e0ef;
-  font-size: 20px;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
 
-.ai-message p {
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 6px 0;
-}
 
-.ai-message ul {
-  font-size: 16px;
-  margin: 8px 0 8px 20px;
-  list-style-type: "💠 ";
-  color: #caf0f8;
-}
 
 
 
@@ -879,32 +813,7 @@ body.light-mode .dropdown li a:hover {
 }
 
 /* ================= Tables ================= */
-.ai-message table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  background-color: #1b263b;
-  box-shadow: 0 0 10px rgba(0, 200, 255, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-}
 
-.ai-message th,
-.ai-message td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid rgba(0, 200, 255, 0.1);
-}
-
-.ai-message th {
-  background-color: #14213d;
-  color: #00b4d8;
-  font-weight: bold;
-}
-
-.ai-message td {
-  color: #caf0f8;
-}
 /* ===== Uniform Container Styling ===== */
 .code-block-container {
   background: #111;
@@ -993,44 +902,66 @@ body.light-mode .dropdown li a:hover {
   gap: 8px;
 }
 
-.ai-thinking {
+/* === GEMINI STYLE LOADER === */
+.gemini-loader {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 5px;
 }
 
-/* Dots animation */
-.dots span {
-  width: 4px;
-  height: 4px;
-  margin: 0 2px;
-  background: #aaa;
-  border-radius: 50%;
-  display: inline-block;
-  animation: bounce 1.4s infinite;
+.ai-icon-wrapper {
+  flex-shrink: 0;
 }
 
-.dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-    opacity: 0.3;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.ai-pulse-icon {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 5px var(--accent-cyan));
+  animation: pulseIcon 1.5s infinite ease-in-out;
 }
 
+.shimmer-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.shimmer-line {
+  height: 12px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 25%,
+    #3a3f4b 50%,
+    var(--border-color) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.shimmer-line.short {
+  width: 60%;
+}
+
+/* === ANIMATIONS === */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes pulseIcon {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+/* Smooth transition when loader disappears */
+.ai-message:not(.loading) {
+  transition: all 0.3s ease;
+}
 /* ================= Footer ================= */
 .footer {
   position: fixed;
@@ -1052,37 +983,7 @@ font-size:10px;
   display: flex;
 }
 
-.ai-thinking {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  opacity: 0.9;
-}
 
-.ai-icon {
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.7; }
-}
-
-/* Animated dots */
-.dots::after {
-  content: "";
-  animation: dots 1.5s infinite;
-}
-
-@keyframes dots {
-  0% { content: ""; }
-  25% { content: "."; }
-  50% { content: ".."; }
-  75% { content: "..."; }
-  100% { content: ""; }
-}
 
 .image-viewer {
   position: fixed;
@@ -1149,6 +1050,133 @@ font-size:10px;
   opacity: 1;
 }
 
+/* Typing/Intro Text */
+.bravexa-intro {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+}
+
+/* Divider Line */
+.bravexa-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, var(--border-color), transparent);
+  margin: 12px 0;
+}
+
+/* Body Content */
+.bravexa-body h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* === CODE BLOCK STYLING === */
+.code-block-container {
+  background: #010409;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.code-toolbar {
+  background: #1f242c;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lang-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.code-toolbar button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.code-toolbar button:hover {
+  background: var(--border-color);
+  border-color: var(--accent-cyan);
+}
+
+.code-content {
+  padding: 15px;
+  margin: 0;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  color: #d1d5db;
+}
+:root {
+  --bg-dark: #0d1117;
+  --card-bg: #161b22;
+  --accent-cyan: #00e1ff;
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+  --border-color: #30363d;
+}
+
+/* Container for the AI Response */
+.ai-message {
+  line-height: 1.6;
+  color: var(--text-main);
+  max-width: 85%;
+  text-align: left;
+  margin: 10px 0;
+  padding: 15px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Outro Text */
+.bravexa-outro {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* Math Card Styling */
+.math-card {
+  background: rgba(0, 225, 255, 0.05);
+  padding: 10px;
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 4px;
+  margin: 10px 0;
+  font-family: serif;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 /* ================= Mobile ================= */
 @media (max-width: 768px) {
   .header{
@@ -1159,7 +1187,10 @@ font-size:10px;
       bottom:30px;
 }
 .hero{
-      margin-top:40vh;
+      margin-top:35vh;
+}
+.ai-message{
+  max-width: 100%;
 }
   .header .logo {
     font-size: 1.2rem;
