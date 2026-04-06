@@ -1045,6 +1045,13 @@ body.light-mode .dropdown li a:hover {
   .header{
     padding:0 10px;
   }
+.input-box{
+      position:fixed;
+      bottom:30px;
+}
+.hero{
+      margin-top:40vh;
+}
   .header .logo {
     font-size: 1.2rem;
   }
@@ -1063,8 +1070,6 @@ body.light-mode .dropdown li a:hover {
   .user-menu{
     margin-right:10px;
   }
-
-  
   
   .chat-window {
     width: 100%;
