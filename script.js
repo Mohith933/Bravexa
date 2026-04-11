@@ -257,7 +257,7 @@ selectedFile = null;
     voiceBtn.style.marginTop = "10px";
     footer.style.fontSize = "10px";
     uploadDropdown.style.bottom = "35px";
-    uploadDropdown.style.left = "20px";
+    uploadDropdown.style.left = "0px";
     uploadDropdown.style.marginTop = "0px";
     footer.innerHTML = "⚡ Bravexa AI Verify important details.";
 
