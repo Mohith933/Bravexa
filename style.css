@@ -436,7 +436,7 @@ padding: 10px 12px 90px;
   position: absolute;
 
   bottom: 30px;   /* appears above button */
-  left: 20px;        /* aligned with + */
+  left: 20;        /* aligned with + */
 
   background:linear-gradient(90deg, #0077b6, #00b4d8);
   border-radius: 14px;
