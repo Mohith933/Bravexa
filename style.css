@@ -435,8 +435,7 @@ padding: 10px 12px 90px;
   display: none;
   position: absolute;
 
-  bottom: 30px;   /* appears above button */
-  left: 20;        /* aligned with + */
+  bottom: 30px;   /* appears above button */      /* aligned with + */
 
   background:linear-gradient(90deg, #0077b6, #00b4d8);
   border-radius: 14px;
@@ -457,7 +456,6 @@ padding: 10px 12px 90px;
 }
 .upload-dropdown {
   left: 0;
-  transform: translateX(-20%);
 }
 
     /* Dropdown list */
