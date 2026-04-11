@@ -432,27 +432,18 @@ padding: 10px 12px 90px;
 
     /* Upload Dropdown - Frosted Glass (macOS style) */
   .upload-dropdown {
-  display: none;
-  position: absolute;
-
-  bottom: 30px;   /* appears above button */      /* aligned with + */
-
-  background:linear-gradient(90deg, #0077b6, #00b4d8);
-  border-radius: 14px;
-  width: 170px;
-
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35),
-              0 -2px 8px rgba(0, 225, 255, 0.3);
-
-  overflow: hidden;
-  z-index: 1000;
-
-  animation: fadeIn 0.25s ease;
+     display: none;
+    position: absolute;
+    bottom: 30px;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    border-radius: 14px;
+    width: 170px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1000;
+    animation: fadeIn 0.25s ease;
 }
 .upload-dropdown {
   left: 0;
