@@ -90,7 +90,7 @@ if ('webkitSpeechRecognition' in window) {
     footer.style.marginTop = "0px";
     chatWindow.style.display = "flex";
     footer.style.fontSize = "10px";
-    footer.innerHTML = "⚡ Bravexa AI Verify important details.";
+    footer.innerHTML = "⚡ Bravexa Verify important details.";
   
   }
 
