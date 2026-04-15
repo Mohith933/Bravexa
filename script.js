@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // === ELEMENT REFERENCES ===
   const hero = document.querySelector('.hero');
   const chatWindow = document.querySelector('.chat-window');
+  const emptyState = document.getElementById("emptyState");
   const sendBtn = document.querySelector('.send-btn');
   const chatbox = document.querySelector('.chatbox');
   const inputArea = document.querySelector('.input-box');
@@ -231,6 +232,9 @@ selectedFile = null;
     inputArea.style.transform = "translateX(-50%)";
     footer.style.marginTop = "0px";
     chatWindow.style.display = "flex";
+    if (emptyState) {
+  emptyState.style.display = "none";
+}
     voiceBtn.style.marginTop = "10px";
     footer.style.fontSize = "10px";
     uploadDropdown.style.bottom = "35px";
@@ -436,6 +440,9 @@ function displayFileMessage(file) {
     currentChatId = chatId;
 
     chatWindow.innerHTML = "";
+    if (emptyState) {
+  emptyState.style.display = "none";
+}
     hero.style.display = "none";
     inputArea.style.position = "fixed";
     chatWindow.style.marginTop = "80px";
