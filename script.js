@@ -236,7 +236,7 @@ selectedFile = null;
     uploadDropdown.style.bottom = "35px";
     uploadDropdown.style.left = "0px";
     uploadDropdown.style.marginTop = "0px";
-    footer.innerHTML = "⚡ Bravexa Verify important details.";
+    footer.innerHTML = "⚡ Fast. Local. Yours.";
 
     // AI typing placeholder
   // AI typing placeholder
