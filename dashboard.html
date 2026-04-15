@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
    <link rel="icon" type="image/png" href="chat.png">
@@ -26,12 +25,11 @@
       <h4>Bravexa<span class="grey">1.1</span></h4>
       <button id="editLogoBtn" class="edit-btn">✏️</button>
   </header>
-
+<p class="hint">No login • Works instantly</p>
   <!-- Hero Section -->
   <div class="hero">
     <h1>Good morning, <span id="username">User</span></h1>
   <div class="suggestions">
-  <button id="resumeBtn">📄 Resume</button>
   <button id="codeBtn">💻 Fix Code</button>
   <button id="websiteBtn">🌐 Website</button>
   <button id="writeBtn">✍️ Write</button>
@@ -39,7 +37,12 @@
   </div>
 
   <!-- Chat Window -->
-  <div class="chat-window" style="display:none;"></div>
+  <div class="chat-window" style="display:none;">
+    <div class="empty-state">
+  <h2>Start something</h2>
+  <p>Try writing, fixing code, or creating a resume.</p>
+</div>
+  </div>
 
   <!-- Input Box -->
   <!-- Bravexa AI Chat Input -->
