@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputArea = document.querySelector('.input-box');
   const footer = document.querySelector('.footer');
   const uploadDropdown = document.getElementById("uploadDropdown");
-  const avatarIcon = document.getElementById("avatarIcon");
-  const dropdownMenu = document.getElementById("dropdownMenu");
   const plusBtn = document.getElementById("plusBtn");
   const screenshotBtn = document.getElementById("screenshotBtn");
   const historyList = document.getElementById("historyList");
@@ -19,12 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Open sidebar
   menuToggle.addEventListener("click", () => {
     sidebar.classList.add("active");
-
-    // Push fake state so back button works
-    history.pushState({ sidebarOpen: true }, "");
   });
 
-    document.getElementById("editLogoBtn").addEventListener("click", () => {
+  document.getElementById("editLogoBtn").addEventListener("click", () => {
   window.location.href = "dashboard.html";
   });
 
@@ -49,11 +44,6 @@ function fillInput(text) {
     const input = document.getElementById("userInput");
     input.value = text;
 }
-
-// Attach events
-document.getElementById("resumeBtn").addEventListener("click", () => {
-    fillInput("Create a resume for me");
-});
 
 document.getElementById("codeBtn").addEventListener("click", () => {
     fillInput("Fix my code error");
@@ -102,7 +92,7 @@ document.getElementById("writeBtn").addEventListener("click", () => {
       voiceBtn.style.color = '#fff';
     };
   } else {
-    alert('Speech Recognition not supported in this browser 😞');
+   console.log("Speech Recognition not supported");
   }
 
  // === LOCAL STORAGE ===
@@ -110,23 +100,10 @@ document.getElementById("writeBtn").addEventListener("click", () => {
   let currentChatId = null;
 
   // === GREETING & USERNAME ===
-  const username = localStorage.getItem("username") || "User";
-  const hour = new Date().getHours();
-  let greeting = "Good evening";
-  if (hour < 12) greeting = "Good morning";
-  else if (hour < 18) greeting = "Good afternoon";
-
-  const usernameEl = document.querySelector("#username");
-  const heroEl = document.querySelector(".hero h1");
-
-  if (usernameEl && heroEl) {
-    usernameEl.textContent = username;
-    heroEl.textContent = `${greeting}, ${username}!`;
-  }
-
-  if (localStorage.getItem("username") && window.location.pathname.includes("index.html")) {
-    window.location.href = "dashboard.html";
-  }
+const heroEl = document.querySelector(".hero h1");
+if (heroEl) {
+  heroEl.textContent = "What do you want to create today?";
+}
 
   // === MESSAGE SEND EVENTS ===
   sendBtn.addEventListener('click', sendMessage);
@@ -473,7 +450,7 @@ function displayFileMessage(file) {
     uploadDropdown.style.bottom = "45px";
     uploadDropdown.style.left = "20px";
     uploadDropdown.style.marginTop = "0px";
-    footer.innerHTML = "⚡ Bravexa AI Verify important details.";
+    footer.innerHTML = "⚡";
 
     chat.messages.forEach(msg => {
   if (msg.type === "image") {
@@ -582,15 +559,8 @@ async function generateAIResponse(userMessage, selectedFile) {
 
   // Internal Intent Helper
   const intents = {
-    greeting: ["hello", "hi", "hey", "bravexa"],
-    leave: ["leave", "absent", "permission"],
-    email: ["email", "mail", "draft", "compose"],
-    resume: ["resume", "cv"],
-    project: ["project", "report"],
-    code: ["code", "python", "javascript", "program"],
-    dbms: ["dbms", "sql", "database"],
-    os: ["os", "operating system"],
-    website: ["website", "html", "css", "web", "page", "frontend"],
+  code: ["code", "python", "javascript", "program"],
+  website: ["website", "html", "css", "web", "page", "frontend"],
   fix: ["fix", "debug", "error", "solve", "bug", "issue"],
   write: ["write", "essay", "blog", "story", "content", "draft"]
   };
@@ -624,46 +594,6 @@ async function generateAIResponse(userMessage, selectedFile) {
   // --- 2. TEXT INTENTS ---
   else {
     switch (intent) {
-      case "greeting":
-        intro = "Hello! I'm Bravexa, your workspace assistant.";
-        body = `<h2>👋 Welcome</h2><p>I can help with <b>docs, code, and reports</b>.</p>`;
-        outro = "Try: 'Write a leave letter' or 'Python code'.";
-        break;
-
-      case "email":
-        intro = "Here is a professional email draft.";
-        body = `<h2>📧 Official Email</h2>
-                <div class="code-block-container">
-                  <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
-                    <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
-                  </div>
-                  <pre class="code-content" contenteditable="true">Subject: [Topic]\n\nDear [Name],\n\nI hope you're well. I'm writing to discuss [Reason].\n\nBest regards,\n[Your Name]</pre>
-                </div>`;
-        break;
-
-      case "leave":
-        intro = "Leave letter ready. Just fill in your details.";
-        body = `<h2>📄 Leave Letter</h2>
-                <div class="code-block-container">
-                  <div class="code-toolbar"><span class="lang-label">📧 mailto</span>
-                    <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="sendBtn">✉️ Send</button></div>
-                  </div>
-                  <pre class="code-content" contenteditable="true">To\nThe Principal,\n[College Name],\n\nSubject: Leave Request\n\nRespected Sir/Madam,\n\nI request leave from [Start] to [End] due to [Reason].\n\nYours faithfully,\n[Your Name]</pre>
-                </div>`;
-        break;
-
-      case "resume":
-      case "project":
-        intro = `I've generated a structured ${intent} template.`;
-        body = `<h2>${intent === 'resume' ? '🧾 Resume' : '📘 Project'} Template</h2>
-                <div class="code-block-container">
-                  <div class="code-toolbar"><span class="lang-label">📄 .docx</span>
-                    <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="saveBtn">💾 Save</button></div>
-                  </div>
-                  <pre class="code-content" contenteditable="true"><b>${intent === 'resume' ? 'Name:' : 'Title:'}</b> [Input Here]\n<b>Skills/Modules:</b> [Details]\n<b>Education/Tools:</b> [Details]</pre>
-                </div>`;
-        break;
-
       case "code":
         let lang = msg.includes("python") ? "python" : "javascript";
         intro = `Here is your ${lang.toUpperCase()} snippet.`;
@@ -714,12 +644,6 @@ async function generateAIResponse(userMessage, selectedFile) {
             </div>`;
     outro = "You can change the format to 'Blog', 'Report', or 'Story'.";
     break;
-
-      case "dbms":
-      case "os":
-        intro = `Quick notes on ${intent.toUpperCase()} for you.`;
-        body = `<h2>🧠 Academic Note</h2><p>Focus on ${intent === 'dbms' ? 'Normalization & Joins' : 'CPU Scheduling & Threads'}.</p>`;
-        break;
 
       default:
         intro = "Bravexa is active.";
@@ -789,12 +713,6 @@ document.addEventListener("click", (e) => {
     utterance.volume = 1.0;
     window.speechSynthesis.speak(utterance);
   }
-
-  // === AVATAR MENU ===
-  avatarIcon.addEventListener("click", () => {
-    dropdownMenu.classList.toggle("active");
-  });
-
   // === UPLOAD DROPDOWN ===
   plusBtn.addEventListener("click", (e) => {
     e.stopPropagation();
