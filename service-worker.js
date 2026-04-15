@@ -2,6 +2,7 @@ const CACHE_NAME = "bravexa-v1";
 
 const urlsToCache = [
   "/",
+  "/index.html",
   "/dashboard.html",
   "/style.css",
   "/script.js",
