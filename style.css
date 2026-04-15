@@ -577,28 +577,18 @@ overflow: visible;
 }
 /* AI message (left) */
 
-
-
-
-
-
 .new-chat {
-  width: 100%;
-  padding: 10px;
-  margin-top:10px;
+  float:left
+  padding: 10px 20px;
   margin-bottom: 10px;
   border: none;
   border-radius: 10px;
   background: linear-gradient(90deg, #00b3ff, #0077ff);
-  color: white;
+  text-decoration: none;
+  color:white;
   font-weight: 600;
   cursor: pointer;
   transition: 0.25s;
-}
-
-.new-chat a{
-  text-decoration: none;
-  color:white;
 }
 
 .new-chat:hover {
