@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menuToggle");
   const sidebar = document.getElementById("sidebar");
 
+  if (emptyState) {
+  emptyState.style.display = "block";
+}
+
   // Open sidebar
   menuToggle.addEventListener("click", () => {
     sidebar.classList.add("active");
