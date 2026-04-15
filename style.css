@@ -578,7 +578,7 @@ overflow: visible;
 /* AI message (left) */
 
 .new-chat {
-  float:left
+  float:left;
   padding: 10px 20px;
   margin-bottom: 10px;
   border: none;
