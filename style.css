@@ -332,7 +332,7 @@ margin-bottom:20px;
 /* ================= Chat Window ================= */
 .chat-window {
   flex-grow: 1;
-  max-width: 600px;
+  max-width: 51%;
   width: 100%;
   display: flex;
 padding: 10px 12px 90px;
