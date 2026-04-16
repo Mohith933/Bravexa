@@ -17,12 +17,10 @@ html {
 body {
   background: linear-gradient(180deg, #0d1b2a, #1b263b);
   color: #e0e6ed;
-  display: flex;
+  display: block;
   flex-direction: column;
-  align-items: center;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  justify-content: center;
   text-align: center;
 }
 
@@ -31,7 +29,8 @@ body {
 
 .sidebar {
   position: fixed;
-   left: -220px; /* match width */
+left: -220px;
+  transition: left 0.3s ease;/* match width */
   width: 220px;
   top: 0;
   height: 100%;
@@ -43,6 +42,26 @@ body {
   transition: 0.3s;
   overflow-y: auto;
   z-index: 1000;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+/* Add overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 900;
+}
+
+.overlay.active {
+  display: block;
 }
 .sidebar hr {
   border: none;
@@ -313,8 +332,8 @@ margin-bottom:20px;
 /* ================= Chat Window ================= */
 .chat-window {
   flex-grow: 1;
+  max-width: 600px;
   width: 100%;
-  max-width: 51%;
   display: flex;
 padding: 10px 12px 90px;
   flex-direction: column;
