@@ -39,10 +39,15 @@ body {
   box-shadow:1px 1px 1px 1px rgba(0,0,0,0.1);
   backdrop-filter: blur(10px);
   color: white;
-  padding: 15px;
+  padding: 20px 14px;
   transition: 0.3s;
   overflow-y: auto;
   z-index: 1000;
+}
+.sidebar hr {
+  border: none;
+  border-top: 1px solid #222;
+  margin: 15px 0;
 }
 
 .sidebar.active {
@@ -53,19 +58,15 @@ body {
       padding:10px;
       font-weight: 700;
       font-size:1rem;
+  margin-bottom: 10px;
+  font-size: 13px;
+  opacity: 0.7;
+      margin-top: 10px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
 }
 .left{
   margin-left:10px;
-}
-.chat {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.chatid {
-  font-size: 0.7rem;
-  text-align: left;
-  color: #aaa;
 }
 
 .menu-btn {
@@ -199,7 +200,7 @@ body.light-mode .header .btn.solid {
   align-items: center;
   font-weight: 600;
   font-size: 1.3rem;
-  margin-bottom:10px;
+  margin-bottom: 20px;
   color: #00c6ff;
   position: relative;
 }
@@ -578,15 +579,16 @@ overflow: visible;
 /* AI message (left) */
 
 .new-chat {
+      display: block;
   float:left;
-  padding: 10px 20px;
-  margin-bottom: 10px;
+  padding: 14px;
+margin-bottom: 25px;
+border-radius: 14px;
+  font-weight: 500;
   border: none;
-  border-radius: 10px;
   background: linear-gradient(90deg, #00b3ff, #0077ff);
   text-decoration: none;
   color:white;
-  font-weight: 600;
   cursor: pointer;
   transition: 0.25s;
 }
@@ -1030,6 +1032,11 @@ font-size:10px;
 .history-list div:hover .delete-btn {
   opacity: 1;
 }
+.history-item {
+  margin-bottom: 12px;   /* add space between items */
+  padding: 14px;
+  border-radius: 12px;
+}
 
 /* Typing/Intro Text */
 .bravexa-intro {
@@ -1038,7 +1045,15 @@ font-size:10px;
   color: var(--accent-cyan);
   margin-bottom: 8px;
 }
+.history-item {
+  background: #1a1a1a;
+  transition: all 0.2s ease;
+}
 
+.history-item:hover {
+  background: #222;
+  transform: translateY(-2px);
+}
 /* Divider Line */
 .bravexa-divider {
   border: 0;
