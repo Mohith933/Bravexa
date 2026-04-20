@@ -1083,6 +1083,10 @@ font-size:10px;
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.ai-message ul{
+      padding:10px;
+}
+
 /* Outro Text */
 .bravexa-outro {
   font-size: 0.85rem;
