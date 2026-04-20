@@ -81,6 +81,25 @@ header {
   transition: transform 0.2s ease;
 }
 
+.hero-sub {
+  margin-top: 10px;
+  font-size: 20px;
+  color: var(--secondary-text);
+  line-height: 1.6;
+}
+
+.explain {
+  margin-top: 60px;
+  max-width: 650px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--secondary-text);
+}
+
+.explain p {
+  margin-bottom: 18px;
+}
+
 .auth-buttons .login:hover {
   transform: translateY(-2px);
   opacity: 0.9;
