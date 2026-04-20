@@ -447,7 +447,7 @@ const deleteBtn = document.createElement("button");
     uploadDropdown.style.bottom = "45px";
     uploadDropdown.style.left = "20px";
     uploadDropdown.style.marginTop = "0px";
-    footer.innerHTML = "⚡";
+    footer.innerHTML = "⚡Fast. Local. Yours.";
     activeChatId = chatId;
 updateHistorySidebar();
 
