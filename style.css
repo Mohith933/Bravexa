@@ -605,7 +605,7 @@ overflow: visible;
 }
 
 .new-chat:hover {
-  background: linear-gradient(90deg, #00b3ff, #0077ff);
+  background: #00b4d8;
   transform: scale(1.03);
   box-shadow: 0 0 10px rgba(0,179,255,0.5);
 }
@@ -946,13 +946,13 @@ font-size:10px;
 
 /* HOVER EFFECT */
 .history-item:hover {
-  background: linear-gradient(90deg, #00b3ff, #0077ff);
+  background: #00b4d8;
   cursor: pointer;
 }
 
 /* ACTIVE CHAT */
 .history-item.active {
-  background: linear-gradient(90deg, #00b3ff, #0077ff);
+  background: #00b4d8;
  box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
 }
 
@@ -1166,23 +1166,3 @@ font-size:10px;
   50% { box-shadow: 0 0 20px rgba(0, 223, 216, 0.6); }
   100% { box-shadow: 0 0 12px rgba(0, 223, 216, 0.3); }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
