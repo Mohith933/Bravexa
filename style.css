@@ -216,6 +216,8 @@ body.light-mode .header .btn.solid {
   align-items: center;
   margin-left: 25px;
 }
+
+
 .sidebar-brand span {
   color: #00c6ff;
 }
@@ -939,15 +941,13 @@ font-size:10px;
   align-items: center;
 }
 
-.history-list div:hover {
+.history-item.active {
   background: linear-gradient(90deg, #00b3ff, #0077ff);
-  transform: translateX(4px);
 }
 
-/* ACTIVE CHAT */
-.history-list .active {
+.history-item:hover {
+    transform: translateX(4px);
   background: linear-gradient(90deg, #00b3ff, #0077ff);
-  border-left: 3px solid #00b3ff;
 }
 
 .delete-btn {
