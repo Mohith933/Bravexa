@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const toggleHistoryBtn = document.getElementById("toggleHistory");
   const menuToggle = document.getElementById("menuToggle");
   const sidebar = document.getElementById("sidebar");
+  const closeSidebarBtn = document.getElementById("closeSidebarBtn");
 
   // Open sidebar
   menuToggle.addEventListener("click", () => {
@@ -23,22 +24,9 @@ document.addEventListener("DOMContentLoaded", function () {
   window.location.href = "dashboard.html";
   });
 
-  // Handle BACK button
-  window.addEventListener("popstate", (event) => {
-    if (sidebar.classList.contains("active")) {
-      sidebar.classList.remove("active");
-    }
-  });
-
-  document.addEventListener("click", (e) => {
-    if (
-      sidebar.classList.contains("active") &&
-      !sidebar.contains(e.target) &&
-      !menuToggle.contains(e.target)
-    ) {
-      sidebar.classList.remove("active");
-    }
-  });
+closeSidebarBtn.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+});
 
 function fillInput(text) {
     const input = document.getElementById("userInput");
