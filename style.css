@@ -38,8 +38,8 @@ display: flex;
   flex-direction: column;
   height: 100vh;
   background:black;
-  box-shadow:1px 1px 1px 1px rgba(0,0,0,0.1);
-  backdrop-filter: blur(10px);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.4);
+  backdrop-filter: blur(18px);
   color: white;
   padding: 15px;
   transition: 0.3s;
@@ -928,36 +928,51 @@ font-size:10px;
   color: white;
   cursor: pointer;
 }
-.history-list div {
-  background: transparent;
-  padding: 10px 12px;
-        flex: 1;
-  overflow-y: auto;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+.history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align:left;
+ padding: 10px 12px;
+  border-radius: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #ccc;
 }
 
+/* HOVER EFFECT */
+.history-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+/* ACTIVE CHAT */
 .history-item.active {
   background: linear-gradient(90deg, #00b3ff, #0077ff);
+  box-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
 }
 
-.history-item:hover {
-    transform: translateX(4px);
-  background: linear-gradient(90deg, #00b3ff, #0077ff);
+/* TITLE */
+.history-item span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* DELETE BTN (hidden default) */
 .delete-btn {
-  background:trasnparent;
   opacity: 0;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
   transition: 0.2s;
 }
 
-.history-list div:hover .delete-btn {
+/* SHOW DELETE ON HOVER */
+.history-item:hover .delete-btn {
   opacity: 1;
 }
 
