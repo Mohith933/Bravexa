@@ -397,9 +397,9 @@ function displayFileMessage(file) {
   updateHistorySidebar();   // ✅ re-render
 });
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "🗑️";
-      deleteBtn.className = "delete-btn";
+const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "✕";
+    deleteBtn.className = "delete-btn";
       deleteBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         deleteConversation(chat.id);
@@ -413,7 +413,7 @@ function displayFileMessage(file) {
 
   // === DELETE CONVERSATION ===
   function deleteConversation(chatId) {
-    const confirmDelete = confirm("🗑️ Delete this conversation permanently?");
+    const confirmDelete = confirm("✕ Delete this conversation permanently?");
     if (!confirmDelete) return;
 
     conversations = conversations.filter(c => c.id !== chatId);
