@@ -10,15 +10,25 @@
   <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-      <div class="logo">
-      <img src="chat.png" alt="Logo">
-      <span>Bravexa</span>
-    </div>
+   <div class="sidebar" id="sidebar">
+     <div class="sidebar-header">
+  <div class="sidebar-brand">
+    <img src="chat.png" alt="Logo">
+    <span>Bravexa</span>
+  </div>
+
+  <button id="closeSidebarBtn" class="icon-btn" title="Close">
+    <!-- door / exit style icon -->
+    <svg viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M10 17l5-5-5-5v10zm-7 4V3c0-1.1.9-2 2-2h10v2H5v18h10v2H5c-1.1 0-2-.9-2-2z"/>
+    </svg>
+  </button>
+</div>
     <a href="dashboard.html" class="new-chat">+ New Chat</a>
   <p>Recents</p>
   <div id="historyList" class="history-list"></div>
 </div>
+
   <!-- Header / Navbar -->
   <header class="header">
       <button id="menuToggle" class="menu-btn">☰</button>
