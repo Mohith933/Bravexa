@@ -86,6 +86,7 @@ document.getElementById("writeBtn").addEventListener("click", () => {
  // === LOCAL STORAGE ===
   let conversations = JSON.parse(localStorage.getItem("bravexaChats")) || [];
   let currentChatId = null;
+  let activeChatId = null; // ✅ ADD THIS
 
   // === GREETING & USERNAME ===
 const heroEl = document.querySelector(".hero h1");
@@ -382,10 +383,19 @@ function displayFileMessage(file) {
     conversations.forEach(chat => {
       const item = document.createElement("div");
       item.className = "history-item";
+      
+        if (chat.id === currentChatId) {
+      item.classList.add("active"); // ✅ single source of truth
+    }
+
 
       const titleSpan = document.createElement("span");
       titleSpan.textContent = chat.title;
-      titleSpan.addEventListener("click", () => loadConversation(chat.id));
+      titleSpan.addEventListener("click", () => {
+  activeChatId = chat.id;   // ✅ store active
+  loadConversation(chat.id);
+  updateHistorySidebar();   // ✅ re-render
+});
 
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "🗑️";
@@ -438,6 +448,8 @@ function displayFileMessage(file) {
     uploadDropdown.style.left = "20px";
     uploadDropdown.style.marginTop = "0px";
     footer.innerHTML = "⚡";
+    activeChatId = chatId;
+updateHistorySidebar();
 
     chat.messages.forEach(msg => {
   if (msg.type === "image") {
@@ -775,5 +787,4 @@ screenshotBtn.addEventListener("click", async () => {
     });
   }
 });
-
 
