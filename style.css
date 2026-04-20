@@ -1127,7 +1127,7 @@ padding:10px;
 .ai-message{
   max-width: 100%;
 }
-      .history-item.active {
+      .delete-btn.active {
   background: #00b4d8;
  box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
 opacity:1;
