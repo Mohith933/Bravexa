@@ -928,6 +928,9 @@ font-size:10px;
   color: white;
   cursor: pointer;
 }
+.history-list {
+  margin-top: 10px;
+}
 .history-item {
   display: flex;
   justify-content: space-between;
@@ -943,14 +946,14 @@ font-size:10px;
 
 /* HOVER EFFECT */
 .history-item:hover {
-  background: rgba(255,255,255,0.05);
-  color: #fff;
+  background: linear-gradient(90deg, #00b3ff, #0077ff);
+  cursor: pointer;
 }
 
 /* ACTIVE CHAT */
 .history-item.active {
   background: linear-gradient(90deg, #00b3ff, #0077ff);
-  box-shadow: 0 0 8px rgba(0, 180, 255, 0.3);
+ box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
 }
 
 /* TITLE */
