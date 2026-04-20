@@ -29,20 +29,23 @@ closeSidebarBtn.addEventListener("click", () => {
 });
 
 function fillInput(text) {
-    const input = document.getElementById("userInput");
+    const input = document.getElementById("userinput");
     input.value = text;
 }
 
 document.getElementById("codeBtn").addEventListener("click", () => {
     fillInput("Fix my code error");
+   sendMessage(); 
 });
 
 document.getElementById("websiteBtn").addEventListener("click", () => {
     fillInput("Build a website");
+   sendMessage(); 
 });
 
 document.getElementById("writeBtn").addEventListener("click", () => {
     fillInput("Write a message");
+   sendMessage(); 
 });
 
 
@@ -93,6 +96,11 @@ const heroEl = document.querySelector(".hero h1");
 if (heroEl) {
   heroEl.textContent = "What do you want to create today?";
 }
+  const sub = document.createElement("p");
+sub.className = "subtext";
+sub.innerText = "Build websites, fix code, or write anything — instantly.";
+
+heroEl.parentNode.appendChild(sub);
 
   // === MESSAGE SEND EVENTS ===
   sendBtn.addEventListener('click', sendMessage);
@@ -225,7 +233,7 @@ selectedFile = null;
     uploadDropdown.style.bottom = "35px";
     uploadDropdown.style.left = "0px";
     uploadDropdown.style.marginTop = "0px";
-    footer.innerHTML = "⚡ Fast. Local. Yours.";
+    footer.innerHTML = "Fast • No login • Runs locally";
 
     // AI typing placeholder
   // AI typing placeholder
@@ -447,7 +455,7 @@ const deleteBtn = document.createElement("button");
     uploadDropdown.style.bottom = "45px";
     uploadDropdown.style.left = "20px";
     uploadDropdown.style.marginTop = "0px";
-    footer.innerHTML = "⚡Fast. Local. Yours.";
+    footer.innerHTML = "Fast • No login • Runs locally";
     activeChatId = chatId;
 updateHistorySidebar();
 
@@ -488,19 +496,6 @@ messageDiv.classList.add("message", msg.sender === "ai" ? "ai-message" : "user-m
   }
 });
   }
-
-  function fillInput(text) {
-  const inputField = document.getElementById('userinput');
-  
-  // Set the text
-  inputField.value = text;
-  
-  // Bring the cursor back to the input automatically
-  inputField.focus();
-  
-  // Optional: Scroll to the input if it's off-screen
-  inputField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
 
   // === SAVE TO LOCAL STORAGE ===
   function saveToLocal() {
@@ -644,9 +639,16 @@ async function generateAIResponse(userMessage, selectedFile) {
     outro = "You can change the format to 'Blog', 'Report', or 'Story'.";
     break;
 
-      default:
-        intro = "Bravexa is active.";
-        body = `<h2>✨ Workspace AI</h2><p>Try "Apply leave", "Draft mail", or "Create Resume".</p>`;
+default:
+  intro = "I can help you build, fix, or write anything.";
+  body = `<h2>✨ Workspace AI</h2>
+          <p>Try:</p>
+          <ul>
+            <li>"Create portfolio website"</li>
+            <li>"Fix JavaScript error"</li>
+            <li>"Write a resume"</li>
+          </ul>`;
+  outro = "Start by typing below 👇";
     }
   }
 
@@ -658,6 +660,8 @@ async function generateAIResponse(userMessage, selectedFile) {
     <div class="bravexa-outro">${outro}</div>
   `;
 }
+
+
 
   // === VOICE BUTTON ===
   document.addEventListener("click", function (e) {
