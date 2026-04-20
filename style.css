@@ -59,16 +59,19 @@ display: flex;
   margin-left:10px;
 }
 
-.sidebar-header {
+.sidebar-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
 }
 
-.sidebar-brand {
-  display: flex;
+.sidebar-brand{
+   display: flex;
   align-items: center;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #00c6ff;
   gap: 8px;
 }
 
@@ -99,13 +102,11 @@ display: flex;
   color: white;
 }
 .edit-btn{
-
     font-size: 15px;
   margin-right: 10px;
   cursor: pointer;
   background: none;
   border: none;
-
 }
 .header {
   position: fixed;
@@ -215,24 +216,8 @@ body.light-mode .header .btn.solid {
   align-items: center;
   margin-left: 25px;
 }
-
-.logo {
- display: flex;
-  align-items: center;
-  font-weight: 600;
-  font-size: 1.3rem;
-  margin-bottom:10px;
+.sidebar-brand span {
   color: #00c6ff;
-  position: relative;
-}
-
-.logo span {
-  margin-left: 8px;
-  color: #00c6ff;
-}
-.logo img{
-  width:35px;
-  height:35px;
 }
 .buttons {
   display: flex;
