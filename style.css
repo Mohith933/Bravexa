@@ -60,10 +60,11 @@ display: flex;
 }
 
 .sidebar-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-bottom: 5px;
 }
 
 .sidebar-brand{
