@@ -58,15 +58,36 @@ display: flex;
 .left{
   margin-left:10px;
 }
-.chat {
-  font-size: 0.95rem;
-  font-weight: 600;
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
 }
 
-.chatid {
-  font-size: 0.7rem;
-  text-align: left;
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-brand img {
+  width: 26px;
+  height: 26px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
   color: #aaa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn:hover {
+  color: #fff;
 }
 
 .menu-btn {
