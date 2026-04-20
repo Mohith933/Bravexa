@@ -1127,6 +1127,11 @@ padding:10px;
 .ai-message{
   max-width: 100%;
 }
+      .history-item.active {
+  background: #00b4d8;
+ box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
+opacity:1;
+}
   .header .logo {
     font-size: 1.2rem;
   }
