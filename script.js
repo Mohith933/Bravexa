@@ -254,7 +254,21 @@ selectedFile = null;
   aiMessage.innerHTML = `
     <div class="gemini-loader">
       <div class="ai-icon-wrapper">
-        <img src="chat.png" class="ai-pulse-icon">
+         <svg viewBox="0 0 24 24" class="ai-pulse-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon -->
+  <path 
+    d="M12 2L20 7V17L12 22L4 17V7L12 2Z" 
+    stroke="white" 
+    stroke-width="1.5" 
+    stroke-linejoin="round"
+  />
+  
+  <!-- Lightning -->
+  <path 
+    d="M13 6L8 13H12L11 18L16 11H12L13 6Z" 
+    fill="white"
+  />
+</svg>
       </div>
       <div class="shimmer-container">
         <div class="shimmer-line"></div>
