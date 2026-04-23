@@ -38,7 +38,7 @@ body {
 display: flex;
   flex-direction: column;
   height: 100vh;
-  background:black;
+  background:#0b0b0b;
     box-shadow: 2px 0 10px rgba(0,0,0,0.4);
   backdrop-filter: blur(18px);
   color: white;
@@ -894,7 +894,7 @@ body.light-mode .dropdown li a:hover {
   margin: 0px;
   padding:10px;
   width:100%;
-  background:black;
+  background:#0b0b0b;
 font-size:10px;
   color: #666;
 }
