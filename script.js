@@ -98,9 +98,15 @@ if (heroEl) {
 }
   const sub = document.createElement("p");
 sub.className = "subtext";
-sub.innerText = "Build websites, fix code, or write anything — instantly.";
+sub.innerText = "No pressure — just begin";
 
 heroEl.parentNode.appendChild(sub);
+
+
+
+
+
+
 
   // === MESSAGE SEND EVENTS ===
   sendBtn.addEventListener('click', sendMessage);
@@ -219,9 +225,10 @@ selectedFile = null;
 }
     chatbox.value = "";
     chatbox.style.height = "auto"; // ✅ reset natural height smoothly
-    hero.style.display = "none";
     inputArea.style.position = "fixed";
-    chatWindow.style.marginTop = "80px";
+    chatWindow.style.marginTop = "50px";
+    hero.style.transition = "opacity 0.3s ease";
+    hero.style.opacity = "0";
     inputArea.style.bottom = "30px";
     previewContainer.style.display = "none";
     inputArea.style.left = "50%";
@@ -234,6 +241,10 @@ selectedFile = null;
     uploadDropdown.style.left = "0px";
     uploadDropdown.style.marginTop = "0px";
     footer.innerHTML = "Fast • No login • Runs locally";
+
+    setTimeout(() => {
+  hero.style.display = "none";
+}, 300);
 
     // AI typing placeholder
   // AI typing placeholder
@@ -443,7 +454,7 @@ const deleteBtn = document.createElement("button");
     chatWindow.innerHTML = "";
     hero.style.display = "none";
     inputArea.style.position = "fixed";
-    chatWindow.style.marginTop = "80px";
+    chatWindow.style.marginTop = "50px";
     chatbox.style.height = "auto"; // ✅ keeps resize natural
     inputArea.style.bottom = "30px";
     inputArea.style.left = "50%";
@@ -503,41 +514,32 @@ messageDiv.classList.add("message", msg.sender === "ai" ? "ai-message" : "user-m
   }
 
   // === SMOOTH SCROLL ===
-  function makeMessageVisible(messageElement) {
-    setTimeout(() => {
-      messageElement.classList.add("visible");
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }, 10);
-  }
+ function makeMessageVisible(el) {
+  requestAnimationFrame(() => {
+    el.classList.add("visible");
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth"
+    });
+  });
+}
 
 
   // === TYPE EFFECT ===
   // === BRAVEXA SMOOTH TYPE EFFECT ===
-function typeText(element, htmlContent, speed = 12) {
+function typeText(element, htmlContent) {
   let i = 0;
-  element.innerHTML = "";
-
-  let lastScroll = 0;
+  const speed = 1.2; // smooth speed
 
   function type() {
-    // increase characters smoothly
-    i += 2; // balanced speed (not jumpy)
-    element.innerHTML = htmlContent.slice(0, i);
+    i += speed * 3;
 
-    // auto-scroll only when needed
-    const now = Date.now();
-    if (now - lastScroll > 120) {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-      });
-      lastScroll = now;
-    }
+    element.innerHTML = htmlContent.slice(0, i);
 
     if (i < htmlContent.length) {
       requestAnimationFrame(type);
     } else {
-      element.innerHTML = htmlContent; // ensure full render
+      element.innerHTML = htmlContent;
     }
   }
 
@@ -791,4 +793,3 @@ screenshotBtn.addEventListener("click", async () => {
     });
   }
 });
-
