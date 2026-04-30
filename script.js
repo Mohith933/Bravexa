@@ -560,123 +560,233 @@ function typeText(element, htmlContent) {
   requestAnimationFrame(type);
 }
 
-
-
-async function generateAIResponse(userMessage, selectedFile) {
-  const msg = (userMessage || "").toLowerCase().trim();
-  const hasText = msg !== "";
-  const hasFile = selectedFile !== null;
-
-  // Internal Intent Helper
-  const intents = {
-  code: ["code", "python", "javascript", "program"],
-  website: ["website", "html", "css", "web", "page", "frontend"],
-  fix: ["fix", "debug", "error", "solve", "bug", "issue"],
-  write: ["write", "essay", "blog", "story", "content", "draft"]
-  };
-
-  function getBestIntent(m) {
-    let bestMatch = "default";
-    let maxScore = 0;
-    for (const [intentName, keywords] of Object.entries(intents)) {
-      let score = 0;
-      keywords.forEach(k => { if (m.includes(k)) score += k.length; });
-      if (score > maxScore) { maxScore = score; bestMatch = intentName; }
-    }
-    return bestMatch;
-  }
-
-  let intent = getBestIntent(msg);
-  let intro = "Ready to help!", body = "", outro = "Let me know if you need changes.";
-
-  // --- 1. FILE & IMAGE HANDLER ---
-  if (hasFile) {
-    const isImg = selectedFile.type.startsWith("image");
-    intro = isImg 
-      ? (hasText ? "I see your image and note—analyzing now." : "Got the image! What should I do with it?")
-      : (hasText ? "File received with your instructions. Processing..." : "File ready. I can summarize or convert it.");
-    
-    body = `<h2>${isImg ? '🖼️ Image' : '📄 File'} Insight</h2>
-            <p>Processing: <b>${selectedFile.name}</b></p>
-            <p style="color:var(--accent-cyan);">[Secure Analysis Active]</p>`;
-  } 
-  
-  // --- 2. TEXT INTENTS ---
-  else {
-    switch (intent) {
-      case "code":
-        let lang = msg.includes("python") ? "python" : "javascript";
-        intro = `Here is your ${lang.toUpperCase()} snippet.`;
-        body = `<h2>💻 Code</h2><div class="code-block-container"><pre class="code-content"><code>${lang === 'python' ? 'print("Hello Bravexa")' : 'console.log("Hello Bravexa");'}</code></pre></div>`;
-        break;
-
-        case "website":
-    intro = "Static web structure initialized. Here is a modern boilerplate.";
-    body = `<h2>🌐 Web Development</h2>
-            <div class="code-block-container">
-              <div class="code-toolbar"><span class="lang-label">HTML5 / CSS3</span>
-                <div class="btn-group"><button class="copyBtn">📋 Copy</button><button class="saveBtn">💾 Save</button></div>
-              </div>
-              <pre class="code-content" contenteditable="true">&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-  &lt;style&gt;
-    body { font-family: sans-serif; background: #0d1117; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .card { padding: 20px; border: 1px solid #00e1ff; border-radius: 10px; }
-  &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div class="card"&gt;Welcome to Bravexa AI Web Project&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</pre>
-            </div>`;
-    outro = "Ready to launch? Just save as index.html.";
-    break;
-
-  case "fix":
-    intro = "Debugging mode active. Paste your error below.";
-    body = `<h2>💻 Fix & Debug</h2>
-            <p>I can help find <b>Syntax Errors</b>, <b>Logic Bugs</b>, or <b>Optimization</b> issues.</p>
-            <div class="math-card">
-              <i>"Programming is 10% writing code and 90% fixing it."</i>
-            </div>`;
-    outro = "Paste the code you want me to analyze!";
-    break;
-
-  case "write":
-    intro = "Creative writing module loaded. What are we drafting?";
-    body = `<h2>✍️ Content Creation</h2>
-            <div class="code-block-container">
-              <div class="code-toolbar"><span class="lang-label">📝 DRAFT</span>
-                <div class="btn-group"><button class="copyBtn">📋 Copy</button></div>
-              </div>
-              <pre class="code-content" contenteditable="true">Title: [Enter Title]\n\nIntroduction:\n[Start writing here...]\n\nKey Points:\n- Point 1\n- Point 2\n\nConclusion:\n[Summary]</pre>
-            </div>`;
-    outro = "You can change the format to 'Blog', 'Report', or 'Story'.";
-    break;
-
-default:
-  intro = "I can help you build, fix, or write anything.";
-  body = `<h2>✨ Workspace AI</h2>
-          <p>Try:</p>
-          <ul>
-            <li>"Create portfolio website"</li>
-            <li>"Fix JavaScript error"</li>
-            <li>"Write a resume"</li>
-          </ul>`;
-  outro = "Start by typing below 👇";
-    }
-  }
-
-  return `
-    <div class="bravexa-intro">${intro}</div>
-    <hr class="bravexa-divider">
-    <div class="bravexa-body">${body}</div>
-    <hr class="bravexa-divider">
-    <div class="bravexa-outro">${outro}</div>
-  `;
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
+async function generateAIResponse(userMessage, selectedFile) {  
+  const msg = (userMessage || "").toLowerCase().trim();  
+  const hasText = msg !== "";  
+  const hasFile = selectedFile !== null;  
+  
+  // Intent keywords
+  const intents = {  
+    code: ["code", "python", "javascript", "program"],  
+    website: ["website", "html", "css", "web", "page", "frontend"],  
+    fix: ["fix", "debug", "error", "solve", "bug", "issue"],  
+    write: ["write", "essay", "blog", "story", "content", "draft"]  
+  };  
+  
+  function getBestIntent(m) {  
+    let bestMatch = "default";  
+    let maxScore = 0;  
+    for (const [intentName, keywords] of Object.entries(intents)) {  
+      let score = 0;  
+      keywords.forEach(k => { if (m.includes(k)) score += k.length; });  
+      if (score > maxScore) { maxScore = score; bestMatch = intentName; }  
+    }  
+    return bestMatch;  
+  }  
+  
+  let intent = getBestIntent(msg);  
+
+  let intro = "", body = "", outro = "";
+
+  // ---------------- VARIATIONS ----------------
+
+  const codeIntros = [
+    "Here’s a clean starter snippet.",
+    "Let’s begin with a simple example.",
+    "Quick code sample ready below.",
+    "Starting point generated for you.",
+    "Minimal working code prepared."
+  ];
+
+  const codeOutros = [
+    "You can build on top of this.",
+    "Try modifying this to fit your use case.",
+    "Want explanation or optimization next?",
+    "We can extend this further if needed.",
+    "Tell me if you want another language."
+  ];
+
+  const websiteIntros = [
+    "Basic website structure ready.",
+    "Here’s a simple web layout to start.",
+    "Frontend boilerplate generated.",
+    "Clean HTML setup prepared.",
+    "Starting your web project here."
+  ];
+
+  const websiteOutros = [
+    "Save this as index.html and open it.",
+    "You can style this further.",
+    "Want responsive version next?",
+    "We can add JS interactions too.",
+    "Let’s enhance this step by step."
+  ];
+
+  const fixIntros = [
+    "Let’s debug this together.",
+    "Looks like something needs fixing.",
+    "Debugging mode active.",
+    "Let’s identify the issue.",
+    "We’ll solve this step by step."
+  ];
+
+  const fixOutros = [
+    "Paste your code and I’ll analyze it.",
+    "Share the error message next.",
+    "We’ll fix it quickly.",
+    "I can optimize it too if needed.",
+    "Let’s improve it once fixed."
+  ];
+
+  const writeIntros = [
+    "Let’s start drafting.",
+    "Here’s a writing structure for you.",
+    "Creative mode ready.",
+    "Start expressing your idea here.",
+    "Draft template prepared."
+  ];
+
+  const writeOutros = [
+    "You can reshape this into any format.",
+    "Keep writing and refine later.",
+    "Want tone change? I can help.",
+    "We can improve flow next.",
+    "Make it yours."
+  ];
+
+  const defaultIntros = [
+    "I can help you build, fix, or write.",
+    "What would you like to do today?",
+    "Let’s get something done.",
+    "Ready when you are.",
+    "Start typing your task."
+  ];
+
+  const defaultOutros = [
+    "Try one of the ideas above.",
+    "Start simple, we’ll expand.",
+    "I’ll guide you step by step.",
+    "You’re in control here.",
+    "Just type and begin."
+  ];
+
+  // ---------------- FILE HANDLING ----------------
+
+  if (hasFile) {  
+    const isImg = selectedFile.type.startsWith("image");  
+
+    const fileIntros = [
+      "Got your file.",
+      "File received.",
+      "Processing your upload.",
+      "Let me check this file.",
+      "File loaded successfully."
+    ];
+
+    const fileOutros = [
+      "Tell me what you want to do with it.",
+      "I can summarize or analyze it.",
+      "Give instructions next.",
+      "We can extract insights from this.",
+      "What should I do with this file?"
+    ];
+
+    intro = pick(fileIntros);
+
+    body = `<h2>${isImg ? '🖼️ Image' : '📄 File'} Insight</h2>  
+            <p><b>${selectedFile.name}</b></p>  
+            <p class="note">File ready for processing</p>`;  
+
+    outro = pick(fileOutros);
+  }  
+
+  // ---------------- TEXT INTENTS ----------------
+  else {  
+    switch (intent) {  
+
+      case "code":  
+        let lang = msg.includes("python") ? "python" : "javascript";  
+
+        intro = pick(codeIntros);
+
+        body = `<h2>💻 Code</h2>
+        <div class="code-block-container">
+        <pre class="code-content"><code>${
+          lang === 'python'
+            ? 'print("Hello Bravexa")'
+            : 'console.log("Hello Bravexa");'
+        }</code></pre></div>`;
+
+        outro = pick(codeOutros);
+        break;  
+
+      case "website":  
+        intro = pick(websiteIntros);
+
+        body = `<h2>🌐 Web Development</h2>
+        <div class="code-block-container">
+        <pre class="code-content" contenteditable="true">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>`;
+
+        outro = pick(websiteOutros);
+        break;  
+
+      case "fix":  
+        intro = pick(fixIntros);
+
+        body = `<h2>💻 Fix & Debug</h2>
+        <p>I can help find issues in your code.</p>`;
+
+        outro = pick(fixOutros);
+        break;  
+
+      case "write":  
+        intro = pick(writeIntros);
+
+        body = `<h2>✍️ Writing</h2>
+        <div class="code-block-container">
+        <pre class="code-content" contenteditable="true">
+Title: 
+Introduction:
+Main Points:
+Conclusion:
+</pre></div>`;
+
+        outro = pick(writeOutros);
+        break;  
+
+      default:  
+        intro = pick(defaultIntros);
+
+        body = `<h2>✨ Workspace</h2>
+        <ul>
+          <li>Create website</li>
+          <li>Fix code</li>
+          <li>Write content</li>
+        </ul>`;
+
+        outro = pick(defaultOutros);
+    }  
+  }  
+
+  // ---------------- FINAL OUTPUT ----------------
+
+  return `  
+    <div class="bravexa-intro">${intro}</div>  
+    <hr class="bravexa-divider">  
+    <div class="bravexa-body">${body}</div>  
+    <hr class="bravexa-divider">  
+    <div class="bravexa-outro">${outro}</div>  
+  `;  
+}
 
 
   // === VOICE BUTTON ===
