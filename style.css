@@ -29,85 +29,71 @@ body {
 
 /* ================= Navbar ================= */
 /* === COLLAPSED (DEFAULT) === */
-.sidebar {
-  position: fixed;
-  left: 0;
-  width: 70px; /* small icon sidebar */
-  top: 0;
-  height: 100vh;
-  background: #0b0b0b;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.4);
-  backdrop-filter: blur(18px);
-  color: white;
-  padding: 15px 8px;
-  transition: width 0.3s ease;
-  z-index: 1000;
-  overflow: hidden;
-}
-
-/* === EXPANDED === */
-.sidebar.active {
-  width: 250px;
-  padding: 15px;
-}
-
-/* Hide text in collapsed */
-.sidebar span,
-.sidebar p {
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  white-space: nowrap;
-}
-
-/* Show text when open */
-.sidebar.active span,
-.sidebar.active p {
-  opacity: 1;
-}
-
-/* Center icons when collapsed */
-.sidebar a,
-.sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Align icons center in small mode */
-.sidebar:not(.active) a {
-  justify-content: center;
-}
-
-/* Hide "Recents" text in collapsed */
-.sidebar:not(.active) p {
-  display: none;
-}
-
-/* History items adjust */
-.history-item span {
-  transition: opacity 0.2s;
-}
-
-.sidebar:not(.active) .history-item span {
-  display: none;
-}
-
-/* Smooth icon alignment */
-.sidebar svg {
-  flex-shrink: 0;
-}
-.icon-btn {
-  background: none;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.icon-btn:hover {
-  color: #fff;
-}
+.sidebar {  
+  position: fixed;  
+   left: -250px; /* match width */  
+  width: 250px;  
+  top: 0;  
+display: flex;  
+  flex-direction: column;  
+  height: 100vh;  
+  background:#0b0b0b;  
+    box-shadow: 2px 0 10px rgba(0,0,0,0.4);  
+  backdrop-filter: blur(18px);  
+  color: white;  
+  padding: 15px;  
+  transition: 0.3s;  
+  z-index: 1000;  
+}  
+  
+.sidebar.active {  
+  left: 0;  
+}  
+.sidebar p{  
+      text-align : left;  
+      padding:10px;  
+      font-weight: 700;  
+      font-size:1rem;  
+}  
+.left{  
+  margin-left:10px;  
+}  
+  
+.sidebar-header{  
+    display: flex;  
+    justify-content: space-between;  
+    align-items: center;  
+    padding: 5px;  
+    padding-bottom: 5px;  
+}  
+  
+.sidebar-brand{  
+   display: flex;  
+  align-items: center;  
+  font-weight: 600;  
+  font-size: 1.3rem;  
+  color: #111;  
+  gap: 8px;  
+}  
+  
+.sidebar-brand svg{  
+  width: 26px;  
+  height: 26px;  
+  color : #f5f5f5;  
+}  
+  
+.icon-btn {  
+  background: none;  
+  border: none;  
+  color: #aaa;  
+  cursor: pointer;  
+  display: flex;  
+  align-items: center;  
+}  
+  
+.icon-btn:hover {  
+  color: #fff;  
+}  
 
 .menu-btn {
     background: transparent;
