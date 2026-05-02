@@ -65,7 +65,7 @@ document.getElementById("writeBtn").addEventListener("click", () => {
 
     voiceBtn.addEventListener('click', () => {
       recognition.start();
-      voiceBtn.style.color = '#00e1ff'; // glowing when active
+      voiceBtn.style.color = '#eee'; // glowing when active
     });
 
     recognition.onresult = (event) => {
